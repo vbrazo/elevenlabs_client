@@ -100,8 +100,8 @@ File.open("video.mp4", "rb") do |file|
     filename: "video.mp4",
     target_languages: ["es", "pt", "fr"],
     name: "My Video Dub",
-    drop_background_audio: true,
-    use_profanity_filter: false
+      drop_background_audio: true,
+      use_profanity_filter: false
   )
   
   puts "Dubbing job created: #{result['dubbing_id']}"
@@ -149,6 +149,13 @@ The client provides access to dialogue generation through the `client.text_to_di
 
 - `client.text_to_dialogue.convert(inputs, **options)` - Convert dialogue inputs to speech
 - `client.text_to_dialogue.text_to_dialogue(inputs, **options)` - Alias for convert method
+
+### Available Sound Generation Methods
+
+The client provides access to sound effect generation through the `client.sound_generation` interface:
+
+- `client.sound_generation.generate(text, **options)` - Generate sound effects from text prompts
+- `client.sound_generation.sound_generation(text, **options)` - Alias for generate method
 
 #### Text-to-Speech Usage Examples
 
@@ -375,6 +382,135 @@ class DialogueController < ApplicationController
               
   rescue ElevenlabsClient::ValidationError => e
     render json: { error: 'Invalid dialogue inputs', details: e.message }, status: :bad_request
+  end
+end
+```
+
+#### Sound Generation Usage Examples
+
+```ruby
+# Basic sound effect generation
+audio_data = client.sound_generation.generate("Ocean waves crashing on rocks")
+
+# Save the sound effect to a file
+File.open("ocean_waves.mp3", "wb") do |file|
+  file.write(audio_data)
+end
+
+# Generate a looping sound effect
+audio_data = client.sound_generation.generate(
+  "Gentle rain falling on leaves",
+  loop: true,
+  duration_seconds: 30.0
+)
+
+# Generate with specific duration and prompt influence
+audio_data = client.sound_generation.generate(
+  "Crackling fireplace",
+  duration_seconds: 15.0,
+  prompt_influence: 0.7
+)
+
+# Generate with custom output format
+audio_data = client.sound_generation.generate(
+  "Birds chirping in a forest",
+  output_format: "mp3_22050_32"
+)
+
+# Complete example with all options
+audio_data = client.sound_generation.generate(
+  "Ambient coffee shop with gentle chatter",
+  loop: true,
+  duration_seconds: 60.0,
+  prompt_influence: 0.5,
+  output_format: "mp3_44100_128"
+)
+
+# Nature sound effects
+nature_sounds = [
+  "Gentle rain on leaves",
+  "Ocean waves on beach", 
+  "Wind through trees",
+  "Thunder in distance"
+]
+
+nature_sounds.each do |sound|
+  audio_data = client.sound_generation.generate(
+    sound,
+    loop: true,
+    duration_seconds: 30.0
+  )
+  
+  filename = sound.gsub(/\s+/, '_').downcase + ".mp3"
+  File.open(filename, "wb") { |f| f.write(audio_data) }
+end
+
+# Short sound effects for UI/games
+ui_sounds = {
+  "notification" => "Gentle notification chime",
+  "success" => "Positive success sound",
+  "error" => "Subtle error indication",
+  "click" => "Clean button click"
+}
+
+ui_sounds.each do |name, prompt|
+  audio_data = client.sound_generation.generate(
+    prompt,
+    loop: false,
+    duration_seconds: 1.0,
+    prompt_influence: 0.8
+  )
+  
+  File.open("#{name}.mp3", "wb") { |f| f.write(audio_data) }
+end
+```
+
+#### Rails Sound Generation Controller Example
+
+```ruby
+class SoundGenerationController < ApplicationController
+  def create_nature_sound
+    client = ElevenlabsClient.new
+    
+    sound_prompts = {
+      'rain' => 'Gentle rain falling on leaves',
+      'ocean' => 'Ocean waves on shore',
+      'forest' => 'Birds chirping in forest'
+    }
+    
+    prompt = sound_prompts[params[:type]]
+    return render json: { error: 'Invalid sound type' }, status: :bad_request unless prompt
+    
+    audio_data = client.sound_generation.generate(
+      prompt,
+      loop: true,
+      duration_seconds: params[:duration]&.to_f || 30.0,
+      prompt_influence: 0.6
+    )
+    
+    send_data audio_data,
+              type: 'audio/mpeg',
+              filename: "nature_#{params[:type]}.mp3",
+              disposition: 'attachment'
+              
+  rescue ElevenlabsClient::ValidationError => e
+    render json: { error: 'Invalid parameters', details: e.message }, status: :bad_request
+  end
+  
+  def create_ambient_sound
+    client = ElevenlabsClient.new
+    
+    audio_data = client.sound_generation.generate(
+      params[:prompt],
+      loop: params[:loop] == 'true',
+      duration_seconds: params[:duration_seconds]&.to_f,
+      prompt_influence: params[:prompt_influence]&.to_f || 0.5
+    )
+    
+    send_data audio_data,
+              type: 'audio/mpeg',
+              filename: 'ambient_sound.mp3',
+              disposition: 'inline'
   end
 end
 ```
