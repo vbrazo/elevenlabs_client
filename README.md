@@ -2,7 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/elevenlabs_client.svg)](https://badge.fury.io/rb/elevenlabs_client)
 
-A comprehensive Ruby client library for the ElevenLabs API, supporting voice synthesis, dubbing, dialogue generation, sound effects, and AI music composition.
+A comprehensive Ruby client library for the ElevenLabs API, supporting voice synthesis, dubbing, dialogue generation, sound effects, AI music composition, voice transformation, speech transcription, audio isolation, and advanced audio processing features.
 
 ## Features
 
@@ -13,6 +13,11 @@ A comprehensive Ruby client library for the ElevenLabs API, supporting voice syn
 🎵 **Music Generation** - AI-powered music composition and streaming  
 🎨 **Voice Design** - Create custom voices from text descriptions  
 🎭 **Voice Management** - Create, edit, and manage individual voices  
+🔄 **Speech-to-Speech** - Transform audio from one voice to another (Voice Changer)  
+📝 **Speech-to-Text** - Transcribe audio and video files with advanced features  
+🔇 **Audio Isolation** - Remove background noise from audio files  
+📱 **Audio Native** - Create embeddable audio players for websites  
+⏱️ **Forced Alignment** - Get precise timing information for audio transcripts  
 🤖 **Models** - List available models and their capabilities  
 📡 **Streaming** - Real-time audio streaming  
 ⚙️ **Configurable** - Flexible configuration options  
@@ -141,6 +146,60 @@ music_data = client.music.compose(
 )
 File.open("generated_music.mp3", "wb") { |f| f.write(music_data) }
 
+# Speech-to-Speech (Voice Changer)
+File.open("input_audio.mp3", "rb") do |audio_file|
+  converted_audio = client.speech_to_speech.convert(
+    "target_voice_id", 
+    audio_file, 
+    "input_audio.mp3",
+    remove_background_noise: true
+  )
+  File.open("converted_audio.mp3", "wb") { |f| f.write(converted_audio) }
+end
+
+# Speech-to-Text Transcription
+File.open("audio.mp3", "rb") do |audio_file|
+  transcription = client.speech_to_text.create(
+    "scribe_v1",
+    file: audio_file,
+    filename: "audio.mp3",
+    diarize: true,
+    timestamps_granularity: "word"
+  )
+  puts "Transcribed: #{transcription['text']}"
+end
+
+# Audio Isolation (Background Noise Removal)
+File.open("noisy_audio.mp3", "rb") do |audio_file|
+  clean_audio = client.audio_isolation.isolate(audio_file, "noisy_audio.mp3")
+  File.open("clean_audio.mp3", "wb") { |f| f.write(clean_audio) }
+end
+
+# Audio Native (Embeddable Player)
+File.open("article.html", "rb") do |html_file|
+  project = client.audio_native.create(
+    "My Article",
+    file: html_file,
+    filename: "article.html",
+    voice_id: "voice_id",
+    auto_convert: true
+  )
+  puts "Player HTML: #{project['html_snippet']}"
+end
+
+# Forced Alignment
+File.open("speech.wav", "rb") do |audio_file|
+  alignment = client.forced_alignment.create(
+    audio_file,
+    "speech.wav",
+    "Hello world, this is a test transcript"
+  )
+  
+  alignment['words'].each do |word|
+    puts "#{word['text']}: #{word['start']}s - #{word['end']}s"
+  end
+end
+
 # Streaming Text-to-Speech
 client.text_to_speech_stream.stream("voice_id", "Streaming text") do |chunk|
   # Process audio chunk in real-time
@@ -160,6 +219,11 @@ end
 - **[Music Generation API](docs/MUSIC.md)** - AI-powered music composition and streaming
 - **[Text-to-Voice API](docs/TEXT_TO_VOICE.md)** - Design and create custom voices
 - **[Voice Management API](docs/VOICES.md)** - Manage individual voices (CRUD operations)
+- **[Speech-to-Speech API](docs/SPEECH_TO_SPEECH.md)** - Transform audio from one voice to another
+- **[Speech-to-Text API](docs/SPEECH_TO_TEXT.md)** - Transcribe audio and video files
+- **[Audio Isolation API](docs/AUDIO_ISOLATION.md)** - Remove background noise from audio
+- **[Audio Native API](docs/AUDIO_NATIVE.md)** - Create embeddable audio players
+- **[Forced Alignment API](docs/FORCED_ALIGNMENT.md)** - Get precise timing information
 - **[Models API](docs/MODELS.md)** - List available models and capabilities
 
 ### Available Endpoints
@@ -174,6 +238,11 @@ end
 | `client.music.*` | AI music composition and streaming | [MUSIC.md](docs/MUSIC.md) |
 | `client.text_to_voice.*` | Voice design and creation | [TEXT_TO_VOICE.md](docs/TEXT_TO_VOICE.md) |
 | `client.voices.*` | Voice management (CRUD) | [VOICES.md](docs/VOICES.md) |
+| `client.speech_to_speech.*` | Voice changer and audio transformation | [SPEECH_TO_SPEECH.md](docs/SPEECH_TO_SPEECH.md) |
+| `client.speech_to_text.*` | Audio/video transcription | [SPEECH_TO_TEXT.md](docs/SPEECH_TO_TEXT.md) |
+| `client.audio_isolation.*` | Background noise removal | [AUDIO_ISOLATION.md](docs/AUDIO_ISOLATION.md) |
+| `client.audio_native.*` | Embeddable audio players | [AUDIO_NATIVE.md](docs/AUDIO_NATIVE.md) |
+| `client.forced_alignment.*` | Audio-text timing alignment | [FORCED_ALIGNMENT.md](docs/FORCED_ALIGNMENT.md) |
 | `client.models.*` | Model information and capabilities | [MODELS.md](docs/MODELS.md) |
 
 ## Configuration Options
@@ -221,6 +290,9 @@ end
 - `AuthenticationError` - Invalid API key or authentication failure
 - `RateLimitError` - Rate limit exceeded
 - `ValidationError` - Invalid request parameters
+- `NotFoundError` - Resource not found (e.g., voice ID, transcript ID)
+- `BadRequestError` - Bad request with invalid parameters
+- `UnprocessableEntityError` - Request cannot be processed (e.g., invalid file format)
 - `APIError` - General API errors
 
 ## Rails Integration
@@ -235,6 +307,11 @@ The gem is designed to work seamlessly with Rails applications. See the [example
 - [MusicController](examples/music_controller.rb) - AI music composition and streaming
 - [TextToVoiceController](examples/text_to_voice_controller.rb) - Voice design and creation
 - [VoicesController](examples/voices_controller.rb) - Voice management (CRUD operations)
+- [SpeechToSpeechController](examples/speech_to_speech_controller.rb) - Voice changer and audio transformation
+- [SpeechToTextController](examples/speech_to_text_controller.rb) - Audio/video transcription with advanced features
+- [AudioIsolationController](examples/audio_isolation_controller.rb) - Background noise removal and audio cleanup
+- [AudioNativeController](examples/audio_native_controller.rb) - Embeddable audio players for websites
+- [ForcedAlignmentController](examples/forced_alignment_controller.rb) - Audio-text timing alignment and subtitle generation
 
 ## Development
 
