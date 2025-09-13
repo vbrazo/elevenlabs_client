@@ -143,6 +143,13 @@ The client provides access to real-time streaming text-to-speech through the `cl
 - `client.text_to_speech_stream.stream(voice_id, text, **options) { |chunk| }` - Stream text-to-speech in real-time
 - `client.text_to_speech_stream.text_to_speech_stream(voice_id, text, **options) { |chunk| }` - Alias for stream method
 
+### Available Text-to-Dialogue Methods
+
+The client provides access to dialogue generation through the `client.text_to_dialogue` interface:
+
+- `client.text_to_dialogue.convert(inputs, **options)` - Convert dialogue inputs to speech
+- `client.text_to_dialogue.text_to_dialogue(inputs, **options)` - Alias for convert method
+
 #### Text-to-Speech Usage Examples
 
 ```ruby
@@ -277,6 +284,97 @@ class StreamingAudioController < ApplicationController
     ensure
       response.stream.close
     end
+  end
+end
+```
+
+#### Text-to-Dialogue Usage Examples
+
+```ruby
+# Basic dialogue conversion
+dialogue_inputs = [
+  { text: "Hello, how are you today?", voice_id: "21m00Tcm4TlvDq8ikWAM" },
+  { text: "I'm doing great, thank you for asking!", voice_id: "pNInz6obpgDQGcFmaJgB" },
+  { text: "That's wonderful to hear.", voice_id: "21m00Tcm4TlvDq8ikWAM" }
+]
+
+audio_data = client.text_to_dialogue.convert(dialogue_inputs)
+
+# Save the dialogue audio to a file
+File.open("dialogue.mp3", "wb") do |file|
+  file.write(audio_data)
+end
+
+# With model specification
+audio_data = client.text_to_dialogue.convert(
+  dialogue_inputs,
+  model_id: "eleven_multilingual_v1"
+)
+
+# With dialogue settings
+audio_data = client.text_to_dialogue.convert(
+  dialogue_inputs,
+  settings: {
+    stability: 0.7,
+    use_speaker_boost: true
+  }
+)
+
+# With deterministic seed for consistent results
+audio_data = client.text_to_dialogue.convert(
+  dialogue_inputs,
+  seed: 12345
+)
+
+# Complete example with all options
+conversation = [
+  { text: "Welcome to our customer service.", voice_id: "agent_voice_id" },
+  { text: "Hi, I need help with my order.", voice_id: "customer_voice_id" },
+  { text: "I'd be happy to help you with that.", voice_id: "agent_voice_id" }
+]
+
+audio_data = client.text_to_dialogue.convert(
+  conversation,
+  model_id: "eleven_multilingual_v1",
+  settings: {
+    stability: 0.6,
+    use_speaker_boost: false
+  },
+  seed: 98765
+)
+```
+
+#### Rails Dialogue Controller Example
+
+```ruby
+class DialogueController < ApplicationController
+  def create_conversation
+    client = ElevenlabsClient.new
+    
+    dialogue_inputs = params[:dialogue].map do |input|
+      {
+        text: input[:text],
+        voice_id: input[:voice_id]
+      }
+    end
+    
+    audio_data = client.text_to_dialogue.convert(
+      dialogue_inputs,
+      model_id: params[:model_id],
+      settings: {
+        stability: params[:stability]&.to_f || 0.5,
+        use_speaker_boost: params[:use_speaker_boost] == 'true'
+      }
+    )
+    
+    # Return the audio file
+    send_data audio_data, 
+              type: 'audio/mpeg', 
+              filename: 'dialogue.mp3',
+              disposition: 'attachment'
+              
+  rescue ElevenlabsClient::ValidationError => e
+    render json: { error: 'Invalid dialogue inputs', details: e.message }, status: :bad_request
   end
 end
 ```
