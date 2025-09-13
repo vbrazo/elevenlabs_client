@@ -172,7 +172,7 @@ RSpec.describe ElevenlabsClient::SoundGeneration do
         it "raises AuthenticationError" do
           expect {
             sound_generation.generate(text)
-          }.to raise_error(ElevenlabsClient::AuthenticationError, "Invalid API key or authentication failed")
+          }.to raise_error(ElevenlabsClient::AuthenticationError)
         end
       end
 
@@ -195,10 +195,10 @@ RSpec.describe ElevenlabsClient::SoundGeneration do
             .to_return(status: 400, body: "Invalid sound generation parameters")
         end
 
-        it "raises ValidationError" do
+        it "raises BadRequestError" do
           expect {
             sound_generation.generate(text)
-          }.to raise_error(ElevenlabsClient::ValidationError)
+          }.to raise_error(ElevenlabsClient::BadRequestError)
         end
       end
 

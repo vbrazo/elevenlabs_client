@@ -131,10 +131,10 @@ RSpec.describe ElevenlabsClient::Voices do
             .to_return(status: 404, body: "Voice not found")
         end
 
-        it "raises ValidationError" do
+        it "raises NotFoundError" do
           expect {
             voices.get(voice_id)
-          }.to raise_error(ElevenlabsClient::ValidationError)
+          }.to raise_error(ElevenlabsClient::NotFoundError)
         end
       end
 
@@ -286,10 +286,10 @@ RSpec.describe ElevenlabsClient::Voices do
             .to_return(status: 400, body: "Invalid voice name")
         end
 
-        it "raises ValidationError" do
+        it "raises BadRequestError" do
           expect {
             voices.create(voice_name, [sample_file])
-          }.to raise_error(ElevenlabsClient::ValidationError)
+          }.to raise_error(ElevenlabsClient::BadRequestError)
         end
       end
     end
@@ -422,10 +422,10 @@ RSpec.describe ElevenlabsClient::Voices do
           .to_return(status: 404, body: "Voice not found")
       end
 
-      it "raises ValidationError" do
+      it "raises NotFoundError" do
         expect {
           voices.delete(voice_id)
-        }.to raise_error(ElevenlabsClient::ValidationError)
+        }.to raise_error(ElevenlabsClient::NotFoundError)
       end
     end
   end

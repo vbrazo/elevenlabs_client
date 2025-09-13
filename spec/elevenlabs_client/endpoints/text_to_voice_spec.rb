@@ -291,10 +291,10 @@ RSpec.describe ElevenlabsClient::TextToVoice do
             .to_return(status: 400, body: "Invalid voice description")
         end
 
-        it "raises ValidationError" do
+        it "raises BadRequestError" do
           expect {
             text_to_voice.design(voice_description)
-          }.to raise_error(ElevenlabsClient::ValidationError)
+          }.to raise_error(ElevenlabsClient::BadRequestError)
         end
       end
     end

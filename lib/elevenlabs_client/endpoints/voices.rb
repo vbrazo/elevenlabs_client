@@ -116,7 +116,7 @@ module ElevenlabsClient
     def banned?(voice_id)
       voice = get(voice_id)
       voice["safety_control"] == "BAN"
-    rescue ElevenlabsClient::ValidationError, ElevenlabsClient::APIError
+    rescue ElevenlabsClient::ValidationError, ElevenlabsClient::APIError, ElevenlabsClient::NotFoundError
       # If we can't get the voice, assume it's not banned
       false
     end
@@ -128,7 +128,7 @@ module ElevenlabsClient
       voices = list
       active_voice_ids = voices["voices"].map { |voice| voice["voice_id"] }
       active_voice_ids.include?(voice_id)
-    rescue ElevenlabsClient::ValidationError, ElevenlabsClient::APIError
+    rescue ElevenlabsClient::ValidationError, ElevenlabsClient::APIError, ElevenlabsClient::NotFoundError
       # If we can't get the voice list, assume it's not active
       false
     end

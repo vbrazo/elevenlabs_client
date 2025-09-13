@@ -310,10 +310,10 @@ RSpec.describe "ElevenlabsClient Voices Integration" do
           .to_return(status: 404, body: "Voice not found")
       end
 
-      it "raises ValidationError through client" do
+      it "raises NotFoundError through client" do
         expect {
           client.voices.get(voice_id)
-        }.to raise_error(ElevenlabsClient::ValidationError)
+        }.to raise_error(ElevenlabsClient::NotFoundError)
       end
     end
   end

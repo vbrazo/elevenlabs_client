@@ -222,10 +222,10 @@ RSpec.describe ElevenlabsClient::Client do
         )
       end
 
-      it "raises ValidationError" do
+      it "raises NotFoundError" do
         expect {
           client.dubs.get(dubbing_id)
-        }.to raise_error(ElevenlabsClient::ValidationError)
+        }.to raise_error(ElevenlabsClient::NotFoundError)
       end
     end
   end

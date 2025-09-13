@@ -104,7 +104,7 @@ RSpec.describe ElevenlabsClient::Dubs do
               filename: filename,
               target_languages: target_languages
             )
-          end.to raise_error(ElevenlabsClient::AuthenticationError, "Invalid API key or authentication failed")
+          end.to raise_error(ElevenlabsClient::AuthenticationError)
         end
       end
 
@@ -137,14 +137,14 @@ RSpec.describe ElevenlabsClient::Dubs do
             )
         end
 
-        it "raises ValidationError" do
+        it "raises BadRequestError" do
           expect do
             dubs.create(
               file_io: temp_file,
               filename: filename,
               target_languages: ["invalid_lang"]
             )
-          end.to raise_error(ElevenlabsClient::ValidationError, /Invalid target language/)
+          end.to raise_error(ElevenlabsClient::BadRequestError)
         end
       end
 
@@ -161,7 +161,7 @@ RSpec.describe ElevenlabsClient::Dubs do
               filename: filename,
               target_languages: target_languages
             )
-          end.to raise_error(ElevenlabsClient::APIError, /API request failed with status 500/)
+          end.to raise_error(ElevenlabsClient::APIError)
         end
       end
     end

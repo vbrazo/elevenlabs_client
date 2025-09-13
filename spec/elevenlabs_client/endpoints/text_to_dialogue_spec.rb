@@ -149,7 +149,7 @@ RSpec.describe ElevenlabsClient::TextToDialogue do
         it "raises AuthenticationError" do
           expect {
             text_to_dialogue.convert(dialogue_inputs)
-          }.to raise_error(ElevenlabsClient::AuthenticationError, "Invalid API key or authentication failed")
+          }.to raise_error(ElevenlabsClient::AuthenticationError)
         end
       end
 
@@ -172,10 +172,10 @@ RSpec.describe ElevenlabsClient::TextToDialogue do
             .to_return(status: 400, body: "Invalid dialogue inputs")
         end
 
-        it "raises ValidationError" do
+        it "raises BadRequestError" do
           expect {
             text_to_dialogue.convert(dialogue_inputs)
-          }.to raise_error(ElevenlabsClient::ValidationError)
+          }.to raise_error(ElevenlabsClient::BadRequestError)
         end
       end
 

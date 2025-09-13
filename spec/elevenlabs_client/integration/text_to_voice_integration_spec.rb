@@ -170,10 +170,10 @@ RSpec.describe "ElevenlabsClient Text-to-Voice Integration" do
           .to_return(status: 400, body: "Voice description too short")
       end
 
-      it "raises ValidationError through client" do
+      it "raises BadRequestError through client" do
         expect {
           client.text_to_voice.design(voice_description)
-        }.to raise_error(ElevenlabsClient::ValidationError)
+        }.to raise_error(ElevenlabsClient::BadRequestError)
       end
     end
   end

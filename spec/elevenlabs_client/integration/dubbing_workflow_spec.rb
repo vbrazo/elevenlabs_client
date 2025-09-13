@@ -123,7 +123,7 @@ RSpec.describe "Dubbing workflow integration" do
           filename: "test_video.mp4",
           target_languages: ["invalid_lang"]
         )
-      }.to raise_error(ElevenlabsClient::ValidationError)
+      }.to raise_error(ElevenlabsClient::BadRequestError)
     end
 
     it "handles rate limiting during high usage" do
