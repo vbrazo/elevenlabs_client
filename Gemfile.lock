@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    elevenlabs_client (0.3.0)
+    elevenlabs_client (0.4.0)
       faraday (~> 2.0)
       faraday-multipart (~> 1.0)
 

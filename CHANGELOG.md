@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-09-12
+
+### Added
+
+- **🎵 Dubbing Generation API** 
+  - `delete(dubbing_id)` - Delete dubbing projects
+  - `get_resource(dubbing_id)` - Get detailed resource information
+  - `create_segment(options)` - Create new segments
+  - `delete_segment(options)` - Delete segments
+  - `update_segment(options)` - Update segment text/timing
+  - `transcribe_segment(options)` - Regenerate transcriptions
+  - `translate_segment(options)` - Regenerate translations
+  - `dub_segment(options)` - Regenerate dubs
+  - `render_project(options)` - Render output media
+  - `update_speaker(options)` - Update speaker voices
+  - `get_similar_voices(options)` - Get voice recommendations
+- **🔧 HTTP Client Improvements** - Added HTTP method
+  - Added `patch` method for PATCH requests
+
 ## [0.3.0] - 2025-09-12
 
 ### Added
