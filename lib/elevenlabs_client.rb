@@ -9,6 +9,7 @@ require_relative "elevenlabs_client/endpoints/text_to_speech_stream"
 require_relative "elevenlabs_client/endpoints/text_to_dialogue"
 require_relative "elevenlabs_client/endpoints/sound_generation"
 require_relative "elevenlabs_client/endpoints/text_to_voice"
+require_relative "elevenlabs_client/endpoints/models"
 require_relative "elevenlabs_client/client"
 
 module ElevenlabsClient

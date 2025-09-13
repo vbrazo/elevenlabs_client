@@ -12,6 +12,7 @@ A comprehensive Ruby client library for the ElevenLabs API, supporting voice syn
 💬 **Dialogue Generation** - Multi-speaker conversations  
 🔊 **Sound Generation** - AI-generated sound effects and ambient audio  
 🎨 **Voice Design** - Create custom voices from text descriptions  
+🤖 **Models** - List available models and their capabilities  
 📡 **Streaming** - Real-time audio streaming  
 ⚙️ **Configurable** - Flexible configuration options  
 🧪 **Well-tested** - Comprehensive test coverage  
@@ -117,6 +118,11 @@ voice_result = client.text_to_voice.create(
   generated_voice_id
 )
 
+# List Available Models
+models = client.models.list
+fastest_model = models["models"].min_by { |m| m["token_cost_factor"] }
+puts "Fastest model: #{fastest_model['name']}"
+
 # Streaming Text-to-Speech
 client.text_to_speech_stream.stream("voice_id", "Streaming text") do |chunk|
   # Process audio chunk in real-time
@@ -134,6 +140,7 @@ end
 - **[Text-to-Dialogue API](docs/TEXT_TO_DIALOGUE.md)** - Multi-speaker conversations
 - **[Sound Generation API](docs/SOUND_GENERATION.md)** - AI-generated sound effects
 - **[Text-to-Voice API](docs/TEXT_TO_VOICE.md)** - Design and create custom voices
+- **[Models API](docs/MODELS.md)** - List available models and capabilities
 
 ### Available Endpoints
 
@@ -145,6 +152,7 @@ end
 | `client.text_to_dialogue.*` | Dialogue generation | [TEXT_TO_DIALOGUE.md](docs/TEXT_TO_DIALOGUE.md) |
 | `client.sound_generation.*` | Sound effect generation | [SOUND_GENERATION.md](docs/SOUND_GENERATION.md) |
 | `client.text_to_voice.*` | Voice design and creation | [TEXT_TO_VOICE.md](docs/TEXT_TO_VOICE.md) |
+| `client.models.*` | Model information and capabilities | [MODELS.md](docs/MODELS.md) |
 
 ## Configuration Options
 
@@ -203,6 +211,7 @@ The gem is designed to work seamlessly with Rails applications. See the [example
 - [TextToDialogueController](examples/text_to_dialogue_controller.rb) - Dialogue generation
 - [SoundGenerationController](examples/sound_generation_controller.rb) - Sound effects
 - [TextToVoiceController](examples/text_to_voice_controller.rb) - Voice design and creation
+- [Models](examples/models.rb) - Models
 
 ## Development
 
@@ -235,6 +244,7 @@ bundle exec rspec
 
 # Run specific test files
 bundle exec rspec spec/elevenlabs_client/endpoints/
+bundle exec rspec spec/elevenlabs_client/client
 bundle exec rspec spec/integration/
 
 # Run with documentation format
