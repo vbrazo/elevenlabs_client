@@ -125,14 +125,14 @@ RSpec.describe ElevenlabsClient::Client do
         )
       end
 
-      it "raises ValidationError for 400 status" do
+      it "raises BadRequestError for 400 status" do
         expect {
           client.dubs.create(
             file_io: video_file,
             filename: "test.mp4",
             target_languages: ["invalid"]
           )
-        }.to raise_error(ElevenlabsClient::ValidationError)
+        }.to raise_error(ElevenlabsClient::BadRequestError)
       end
     end
 

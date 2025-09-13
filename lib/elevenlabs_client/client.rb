@@ -7,7 +7,7 @@ module ElevenlabsClient
   class Client
     DEFAULT_BASE_URL = "https://api.elevenlabs.io"
 
-    attr_reader :base_url, :api_key, :dubs, :text_to_speech, :text_to_speech_stream, :text_to_dialogue, :sound_generation, :text_to_voice, :models, :voices
+    attr_reader :base_url, :api_key, :dubs, :text_to_speech, :text_to_speech_stream, :text_to_dialogue, :sound_generation, :text_to_voice, :models, :voices, :music
 
     def initialize(api_key: nil, base_url: nil, api_key_env: "ELEVENLABS_API_KEY", base_url_env: "ELEVENLABS_BASE_URL")
       @api_key = api_key || fetch_api_key(api_key_env)
@@ -21,6 +21,7 @@ module ElevenlabsClient
       @text_to_voice = TextToVoice.new(self)
       @models = Models.new(self)
       @voices = Voices.new(self)
+      @music = Endpoints::Music.new(self)
     end
 
     # Makes an authenticated GET request
@@ -84,7 +85,7 @@ module ElevenlabsClient
         req.body = body.to_json if body
       end
 
-      handle_binary_response(response)
+      handle_response(response)
     end
 
     # Makes an authenticated POST request with custom headers
@@ -102,7 +103,7 @@ module ElevenlabsClient
 
       # For streaming/binary responses, return raw body
       if custom_headers["Accept"]&.include?("audio") || custom_headers["Transfer-Encoding"] == "chunked"
-        handle_binary_response(response)
+        handle_response(response)
       else
         handle_response(response)
       end
@@ -126,7 +127,7 @@ module ElevenlabsClient
         end
       end
 
-      handle_streaming_response(response)
+      handle_response(response)
     end
 
     # Helper method to create Faraday::Multipart::FilePart
@@ -172,44 +173,58 @@ module ElevenlabsClient
       case response.status
       when 200..299
         response.body
+      when 400
+        error_message = extract_error_message(response.body)
+        raise BadRequestError, error_message.empty? ? "Bad request - invalid parameters" : error_message
       when 401
-        raise AuthenticationError, "Invalid API key or authentication failed"
+        error_message = extract_error_message(response.body)
+        raise AuthenticationError, error_message.empty? ? "Invalid API key or authentication failed" : error_message
+      when 404
+        error_message = extract_error_message(response.body)
+        raise NotFoundError, error_message.empty? ? "Resource not found" : error_message
+      when 422
+        error_message = extract_error_message(response.body)
+        raise UnprocessableEntityError, error_message.empty? ? "Unprocessable entity - invalid data" : error_message
       when 429
-        raise RateLimitError, "Rate limit exceeded"
+        error_message = extract_error_message(response.body)
+        raise RateLimitError, error_message.empty? ? "Rate limit exceeded" : error_message
       when 400..499
-        raise ValidationError, response.body.inspect
+        error_message = extract_error_message(response.body)
+        raise ValidationError, error_message.empty? ? "Client error occurred with status #{response.status}" : error_message
       else
-        raise APIError, "API request failed with status #{response.status}: #{response.body.inspect}"
+        error_message = extract_error_message(response.body)
+        raise APIError, error_message.empty? ? "API request failed with status #{response.status}" : error_message
       end
     end
 
-    def handle_binary_response(response)
-      case response.status
-      when 200..299
-        response.body
-      when 401
-        raise AuthenticationError, "Invalid API key or authentication failed"
-      when 429
-        raise RateLimitError, "Rate limit exceeded"
-      when 400..499
-        raise ValidationError, "API request failed with status #{response.status}"
-      else
-        raise APIError, "API request failed with status #{response.status}"
-      end
-    end
+    private
 
-    def handle_streaming_response(response)
-      case response.status
-      when 200..299
-        response
-      when 401
-        raise AuthenticationError, "Invalid API key or authentication failed"
-      when 429
-        raise RateLimitError, "Rate limit exceeded"
-      when 400..499
-        raise ValidationError, "API request failed with status #{response.status}"
-      else
-        raise APIError, "API request failed with status #{response.status}"
+    def extract_error_message(response_body)
+      return "" if response_body.nil? || response_body.empty?
+      
+      # Handle non-string response bodies
+      body_str = response_body.is_a?(String) ? response_body : response_body.to_s
+      
+      begin
+        error_info = JSON.parse(body_str)
+        
+        # Try different common error message fields
+        message = error_info["detail"] || 
+                 error_info["message"] || 
+                 error_info["error"] ||
+                 error_info["errors"]
+        
+        # Handle nested detail objects
+        if message.is_a?(Hash)
+          message = message["message"] || message.to_s
+        elsif message.is_a?(Array)
+          message = message.first.to_s
+        end
+        
+        message.to_s
+      rescue JSON::ParserError, TypeError
+        # If not JSON or can't be parsed, return the raw body (truncated if too long)
+        body_str.length > 200 ? "#{body_str[0..200]}..." : body_str
       end
     end
 

@@ -6,4 +6,7 @@ module ElevenlabsClient
   class AuthenticationError < Error; end
   class RateLimitError < Error; end
   class ValidationError < Error; end
+  class NotFoundError < Error; end
+  class BadRequestError < Error; end
+  class UnprocessableEntityError < Error; end
 end

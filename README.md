@@ -1,9 +1,8 @@
 # ElevenlabsClient
 
 [![Gem Version](https://badge.fury.io/rb/elevenlabs_client.svg)](https://badge.fury.io/rb/elevenlabs_client)
-[![Build Status](https://github.com/yourusername/elevenlabs_client/workflows/CI/badge.svg)](https://github.com/yourusername/elevenlabs_client/actions)
 
-A comprehensive Ruby client library for the ElevenLabs API, supporting voice synthesis, dubbing, dialogue generation, and sound effects.
+A comprehensive Ruby client library for the ElevenLabs API, supporting voice synthesis, dubbing, dialogue generation, sound effects, and AI music composition.
 
 ## Features
 
@@ -11,6 +10,7 @@ A comprehensive Ruby client library for the ElevenLabs API, supporting voice syn
 🎬 **Dubbing** - Create dubbed versions of audio/video content  
 💬 **Dialogue Generation** - Multi-speaker conversations  
 🔊 **Sound Generation** - AI-generated sound effects and ambient audio  
+🎵 **Music Generation** - AI-powered music composition and streaming  
 🎨 **Voice Design** - Create custom voices from text descriptions  
 🎭 **Voice Management** - Create, edit, and manage individual voices  
 🤖 **Models** - List available models and their capabilities  
@@ -134,6 +134,13 @@ File.open("sample1.mp3", "rb") do |sample|
   puts "Created voice: #{voice['voice_id']}"
 end
 
+# Music Generation
+music_data = client.music.compose(
+  prompt: "Upbeat electronic dance track with synthesizers",
+  music_length_ms: 30000
+)
+File.open("generated_music.mp3", "wb") { |f| f.write(music_data) }
+
 # Streaming Text-to-Speech
 client.text_to_speech_stream.stream("voice_id", "Streaming text") do |chunk|
   # Process audio chunk in real-time
@@ -150,6 +157,7 @@ end
 - **[Text-to-Speech Streaming API](docs/TEXT_TO_SPEECH_STREAMING.md)** - Real-time audio streaming
 - **[Text-to-Dialogue API](docs/TEXT_TO_DIALOGUE.md)** - Multi-speaker conversations
 - **[Sound Generation API](docs/SOUND_GENERATION.md)** - AI-generated sound effects
+- **[Music Generation API](docs/MUSIC.md)** - AI-powered music composition and streaming
 - **[Text-to-Voice API](docs/TEXT_TO_VOICE.md)** - Design and create custom voices
 - **[Voice Management API](docs/VOICES.md)** - Manage individual voices (CRUD operations)
 - **[Models API](docs/MODELS.md)** - List available models and capabilities
@@ -163,6 +171,7 @@ end
 | `client.text_to_speech_stream.*` | Streaming TTS | [TEXT_TO_SPEECH_STREAMING.md](docs/TEXT_TO_SPEECH_STREAMING.md) |
 | `client.text_to_dialogue.*` | Dialogue generation | [TEXT_TO_DIALOGUE.md](docs/TEXT_TO_DIALOGUE.md) |
 | `client.sound_generation.*` | Sound effect generation | [SOUND_GENERATION.md](docs/SOUND_GENERATION.md) |
+| `client.music.*` | AI music composition and streaming | [MUSIC.md](docs/MUSIC.md) |
 | `client.text_to_voice.*` | Voice design and creation | [TEXT_TO_VOICE.md](docs/TEXT_TO_VOICE.md) |
 | `client.voices.*` | Voice management (CRUD) | [VOICES.md](docs/VOICES.md) |
 | `client.models.*` | Model information and capabilities | [MODELS.md](docs/MODELS.md) |
@@ -223,6 +232,7 @@ The gem is designed to work seamlessly with Rails applications. See the [example
 - [StreamingAudioController](examples/streaming_audio_controller.rb) - Real-time streaming
 - [TextToDialogueController](examples/text_to_dialogue_controller.rb) - Dialogue generation
 - [SoundGenerationController](examples/sound_generation_controller.rb) - Sound effects
+- [MusicController](examples/music_controller.rb) - AI music composition and streaming
 - [TextToVoiceController](examples/text_to_voice_controller.rb) - Voice design and creation
 - [VoicesController](examples/voices_controller.rb) - Voice management (CRUD operations)
 
@@ -231,7 +241,7 @@ The gem is designed to work seamlessly with Rails applications. See the [example
 After checking out the repo, run:
 
 ```bash
-bin/setup      # Install dependencies
+bin/setup          # Install dependencies
 bundle exec rspec  # Run tests
 ```
 
