@@ -5,7 +5,155 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2025-09-12
+
+### Added
+- **🎵 Music Generation API** - AI-powered music composition and streaming
+  - `client.music.compose(options)` - Generate music from text prompts
+  - `client.music.compose_stream(options, &block)` - Real-time music streaming
+  - `client.music.compose_detailed(options)` - Generate music with metadata
+  - `client.music.create_plan(options)` - Create structured composition plans
+- **🎭 Voice Management API** - Complete CRUD operations for individual voices
+  - `client.voices.get(voice_id)` - Get detailed voice information
+  - `client.voices.list()` - List all voices in account
+  - `client.voices.create(name, samples, **options)` - Create custom voices from audio samples
+  - `client.voices.edit(voice_id, samples, **options)` - Edit existing voices
+  - `client.voices.delete(voice_id)` - Delete voices from account
+  - `client.voices.banned?(voice_id)` - Check voice safety status
+  - `client.voices.active?(voice_id)` - Check voice availability
+- **📋 Enhanced Rakefile** - Comprehensive gem management and development tasks
+  - Build, install, push, and clean gem operations
+  - Development tools (linting, testing, security audit)
+  - Documentation generation and serving
+  - Release preparation and management
+  - Maintenance and cleanup tasks
+
+### Enhanced
+- **🚨 Consolidated Error Handling** - Unified error handling across all endpoints
+  - Merged `handle_response`, `handle_binary_response`, and `handle_streaming_response` into single method
+  - Enhanced error message extraction from JSON, nested objects, arrays, and plain text
+  - More specific error types: `BadRequestError`, `NotFoundError`, `UnprocessableEntityError`
+  - Better error messages extracted from actual API responses instead of generic fallbacks
+- **🔧 HTTP Client Improvements** - Added missing HTTP methods and consolidated functionality
+  - Added `delete` method for DELETE requests
+  - Enhanced `post_with_custom_headers` for flexible header management
+  - Consistent error handling across all HTTP methods (GET, POST, DELETE, multipart, binary, streaming)
+- **📚 Documentation Organization** - Comprehensive documentation for all new features
+  - [MUSIC.md](docs/MUSIC.md) - Complete music generation guide (570 lines)
+  - [VOICES.md](docs/VOICES.md) - Voice management documentation (519 lines)
+  - Enhanced README with music capabilities and updated feature list
+  - Professional Rails integration examples
+
+### New Error Classes
+- `ElevenlabsClient::BadRequestError` (400) - Invalid parameters or malformed requests
+- `ElevenlabsClient::NotFoundError` (404) - Resource not found
+- `ElevenlabsClient::UnprocessableEntityError` (422) - Valid request but invalid data
+
+### Music Generation Features
+- **🎼 Composition Styles** - Support for all major music genres
+  - Electronic: EDM, House, Techno, Ambient, Synthwave
+  - Orchestral: Classical, Film Score, Epic Orchestral
+  - Popular: Pop, Rock, Hip-Hop, Country, Folk
+  - Jazz & Blues: Traditional Jazz, Smooth Jazz, Blues
+  - World Music: Celtic, Medieval, New Age, Ethnic
+- **🎛️ Advanced Controls** - Detailed composition parameters
+  - Custom composition plans with sections, tempo, key, instruments
+  - Multiple output formats (MP3, WAV) with quality settings
+  - Music length control (5 seconds to 5 minutes)
+  - Model selection for different generation approaches
+- **📡 Streaming Support** - Real-time music generation and playback
+  - Chunk-based streaming for immediate playback
+  - Memory-efficient processing for long compositions
+  - WebSocket integration for live applications
+
+### Voice Management Features
+- **🎤 Voice Creation** - Create custom voices from audio samples
+  - Multiple sample upload support for better quality
+  - Voice metadata and labeling system
+  - Quality validation and optimization
+- **🔧 Voice Editing** - Modify existing voices
+  - Add new samples to improve voice quality
+  - Update voice metadata and descriptions
+  - Batch voice operations
+- **🔍 Voice Discovery** - Advanced voice management
+  - Search and filter voices by category, labels, quality
+  - Voice status checking (active, banned, available)
+  - Voice analytics and usage tracking
+
+### Rails Integration Examples
+- **[MusicController](examples/music_controller.rb)** - Complete music generation implementation
+  - Basic and advanced music generation endpoints
+  - Streaming music with real-time playback
+  - Composition planning and structured music creation
+  - Batch generation and music library management
+  - Interactive music generation with user preferences
+- **[VoicesController](examples/voices_controller.rb)** - Voice management implementation
+  - Full CRUD operations for voice management
+  - File upload handling for voice samples
+  - Voice search and filtering capabilities
+  - Batch voice operations and management workflows
+
+### Technical Improvements
+- **🧪 Comprehensive Testing** - Expanded test coverage
+  - **57 new music tests** (24 unit + 33 integration)
+  - **Enhanced error handling tests** across all endpoints
+  - **Total test coverage**: 300+ tests with consistent passing
+- **🏗️ Architecture Consolidation** - Cleaner codebase
+  - Removed duplicate error handling methods
+  - Consolidated HTTP response processing
+  - Enhanced error message extraction with fallback handling
+  - Improved code organization and maintainability
+- **📦 Release Management** - Professional release workflow
+  - Automated release preparation tasks
+  - Version management and changelog automation
+  - Security auditing and dependency management
+  - Documentation generation and validation
+
+### Breaking Changes
+- **Error Handling** - More specific error types may require catch block updates
+  ```ruby
+  # Before (v0.2.0)
+  rescue ElevenlabsClient::ValidationError => e
+    # Handle all 4xx errors
+  end
+  
+  # After (v0.3.0) - More specific handling
+  rescue ElevenlabsClient::BadRequestError => e
+    # Handle 400 Bad Request
+  rescue ElevenlabsClient::NotFoundError => e
+    # Handle 404 Not Found
+  rescue ElevenlabsClient::UnprocessableEntityError => e
+    # Handle 422 Unprocessable Entity
+  rescue ElevenlabsClient::ValidationError => e
+    # Handle other 4xx errors
+  end
+  ```
+
+### Migration Guide
+```ruby
+# New Music API Usage
+client = ElevenlabsClient.new
+
+# Generate music
+music_data = client.music.compose(
+  prompt: "Upbeat electronic dance track",
+  music_length_ms: 30000
+)
+
+# Stream music generation
+client.music.compose_stream(prompt: "Relaxing ambient") do |chunk|
+  # Process audio chunk in real-time
+end
+
+# Voice management
+voices = client.voices.list
+voice = client.voices.get("voice_id")
+
+# Create custom voice
+File.open("sample.mp3", "rb") do |sample|
+  voice = client.voices.create("My Voice", [sample])
+end
+```
 
 ## [0.2.0] - 2025-09-12
 
