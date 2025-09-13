@@ -61,6 +61,20 @@ module ElevenlabsClient
       handle_response(response)
     end
 
+    # Makes an authenticated PATCH request
+    # @param path [String] API endpoint path
+    # @param body [Hash, nil] Request body
+    # @return [Hash] Response body
+    def patch(path, body = nil)
+      response = @conn.patch(path) do |req|
+        req.headers["xi-api-key"] = api_key
+        req.headers["Content-Type"] = "application/json"
+        req.body = body.to_json if body
+      end
+
+      handle_response(response)
+    end
+
     # Makes an authenticated multipart POST request
     # @param path [String] API endpoint path
     # @param payload [Hash] Multipart payload

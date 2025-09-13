@@ -56,6 +56,124 @@ RSpec.describe ElevenlabsClient::Client do
     end
   end
 
+  describe "#patch" do
+    let(:path) { "/v1/test/patch" }
+    let(:request_body) { { "field" => "updated_value" } }
+    let(:response_body) { { "status" => "updated", "version" => 2 } }
+
+    before do
+      stub_request(:patch, "https://api.elevenlabs.io#{path}")
+        .with(
+          headers: {
+            "xi-api-key" => api_key,
+            "Content-Type" => "application/json"
+          },
+          body: request_body.to_json
+        )
+        .to_return(
+          status: 200,
+          body: response_body.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+    end
+
+    it "makes authenticated PATCH request with JSON body" do
+      result = client.patch(path, request_body)
+
+      expect(result).to eq(response_body)
+      expect(WebMock).to have_requested(:patch, "https://api.elevenlabs.io#{path}")
+        .with(
+          headers: {
+            "xi-api-key" => api_key,
+            "Content-Type" => "application/json"
+          },
+          body: request_body.to_json
+        )
+    end
+
+    context "without request body" do
+      before do
+        stub_request(:patch, "https://api.elevenlabs.io#{path}")
+          .with(
+            headers: {
+              "xi-api-key" => api_key,
+              "Content-Type" => "application/json"
+            }
+          )
+          .to_return(
+            status: 200,
+            body: response_body.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+      end
+
+      it "makes PATCH request without body" do
+        result = client.patch(path)
+
+        expect(result).to eq(response_body)
+        expect(WebMock).to have_requested(:patch, "https://api.elevenlabs.io#{path}")
+          .with(
+            headers: {
+              "xi-api-key" => api_key,
+              "Content-Type" => "application/json"
+            }
+          )
+      end
+    end
+
+    context "when API returns error" do
+      before do
+        stub_request(:patch, "https://api.elevenlabs.io#{path}")
+          .to_return(status: 400, body: "Bad Request")
+      end
+
+      it "raises BadRequestError for 400 status" do
+        expect {
+          client.patch(path, request_body)
+        }.to raise_error(ElevenlabsClient::BadRequestError)
+      end
+    end
+
+    context "when API returns 401" do
+      before do
+        stub_request(:patch, "https://api.elevenlabs.io#{path}")
+          .to_return(status: 401, body: "Unauthorized")
+      end
+
+      it "raises AuthenticationError" do
+        expect {
+          client.patch(path, request_body)
+        }.to raise_error(ElevenlabsClient::AuthenticationError)
+      end
+    end
+
+    context "when API returns 404" do
+      before do
+        stub_request(:patch, "https://api.elevenlabs.io#{path}")
+          .to_return(status: 404, body: "Not Found")
+      end
+
+      it "raises NotFoundError" do
+        expect {
+          client.patch(path, request_body)
+        }.to raise_error(ElevenlabsClient::NotFoundError)
+      end
+    end
+
+    context "when API returns 422" do
+      before do
+        stub_request(:patch, "https://api.elevenlabs.io#{path}")
+          .to_return(status: 422, body: "Unprocessable Entity")
+      end
+
+      it "raises UnprocessableEntityError" do
+        expect {
+          client.patch(path, request_body)
+        }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
+      end
+    end
+  end
+
   describe "dubbing functionality via dubs endpoint" do
     let(:video_file) { create_temp_video_file }
     let(:response_body) do
