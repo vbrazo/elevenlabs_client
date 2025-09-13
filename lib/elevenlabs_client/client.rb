@@ -7,13 +7,14 @@ module ElevenlabsClient
   class Client
     DEFAULT_BASE_URL = "https://api.elevenlabs.io"
 
-    attr_reader :base_url, :api_key, :dubs
+    attr_reader :base_url, :api_key, :dubs, :text_to_speech
 
     def initialize(api_key: nil, base_url: nil, api_key_env: "ELEVENLABS_API_KEY", base_url_env: "ELEVENLABS_BASE_URL")
       @api_key = api_key || fetch_api_key(api_key_env)
       @base_url = base_url || fetch_base_url(base_url_env)
       @conn = build_connection
       @dubs = Dubs.new(self)
+      @text_to_speech = TextToSpeech.new(self)
     end
 
     # Makes an authenticated GET request
@@ -52,6 +53,41 @@ module ElevenlabsClient
       end
 
       handle_response(response)
+    end
+
+    # Makes an authenticated POST request expecting binary response
+    # @param path [String] API endpoint path
+    # @param body [Hash, nil] Request body
+    # @return [String] Binary response body
+    def post_binary(path, body = nil)
+      response = @conn.post(path) do |req|
+        req.headers["xi-api-key"] = api_key
+        req.headers["Content-Type"] = "application/json"
+        req.body = body.to_json if body
+      end
+
+      handle_binary_response(response)
+    end
+
+    # Makes an authenticated POST request with custom headers
+    # @param path [String] API endpoint path
+    # @param body [Hash, nil] Request body
+    # @param custom_headers [Hash] Additional headers
+    # @return [String] Response body (binary or text)
+    def post_with_custom_headers(path, body = nil, custom_headers = {})
+      response = @conn.post(path) do |req|
+        req.headers["xi-api-key"] = api_key
+        req.headers["Content-Type"] = "application/json"
+        custom_headers.each { |key, value| req.headers[key] = value }
+        req.body = body.to_json if body
+      end
+
+      # For streaming/binary responses, return raw body
+      if custom_headers["Accept"]&.include?("audio") || custom_headers["Transfer-Encoding"] == "chunked"
+        handle_binary_response(response)
+      else
+        handle_response(response)
+      end
     end
 
     # Helper method to create Faraday::Multipart::FilePart
@@ -105,6 +141,21 @@ module ElevenlabsClient
         raise ValidationError, response.body.inspect
       else
         raise APIError, "API request failed with status #{response.status}: #{response.body.inspect}"
+      end
+    end
+
+    def handle_binary_response(response)
+      case response.status
+      when 200..299
+        response.body
+      when 401
+        raise AuthenticationError, "Invalid API key or authentication failed"
+      when 429
+        raise RateLimitError, "Rate limit exceeded"
+      when 400..499
+        raise ValidationError, "API request failed with status #{response.status}"
+      else
+        raise APIError, "API request failed with status #{response.status}"
       end
     end
 

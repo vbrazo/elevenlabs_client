@@ -4,6 +4,7 @@ require_relative "elevenlabs_client/version"
 require_relative "elevenlabs_client/errors"
 require_relative "elevenlabs_client/settings"
 require_relative "elevenlabs_client/dubs"
+require_relative "elevenlabs_client/text_to_speech"
 require_relative "elevenlabs_client/client"
 
 module ElevenlabsClient

@@ -129,6 +129,95 @@ The client provides access to all dubbing endpoints through the `client.dubs` in
 - `client.dubs.list(params = {})` - List dubbing jobs with optional filters
 - `client.dubs.resources(dubbing_id)` - Get dubbing resources for editing
 
+### Available Text-to-Speech Methods
+
+The client provides access to text-to-speech functionality through the `client.text_to_speech` interface:
+
+- `client.text_to_speech.convert(voice_id, text, **options)` - Convert text to speech
+- `client.text_to_speech.text_to_speech(voice_id, text, **options)` - Alias for convert method
+
+#### Text-to-Speech Usage Examples
+
+```ruby
+# Basic text-to-speech conversion
+voice_id = "21m00Tcm4TlvDq8ikWAM"  # Replace with actual voice ID
+audio_data = client.text_to_speech.convert(voice_id, "Hello, world!")
+
+# Save the audio to a file
+File.open("output.mp3", "wb") do |file|
+  file.write(audio_data)
+end
+
+# With voice settings
+audio_data = client.text_to_speech.convert(
+  voice_id,
+  "This is a test with custom voice settings.",
+  voice_settings: {
+    stability: 0.5,
+    similarity_boost: 0.8,
+    style: 0.2,
+    use_speaker_boost: true
+  }
+)
+
+# With specific model
+audio_data = client.text_to_speech.convert(
+  voice_id,
+  "Using a specific model for generation.",
+  model_id: "eleven_monolingual_v1"
+)
+
+# With streaming optimization
+audio_data = client.text_to_speech.convert(
+  voice_id,
+  "Optimized for streaming playback.",
+  optimize_streaming: true
+)
+
+# All options combined
+audio_data = client.text_to_speech.convert(
+  voice_id,
+  "Complete example with all options.",
+  model_id: "eleven_multilingual_v1",
+  voice_settings: {
+    stability: 0.7,
+    similarity_boost: 0.9
+  },
+  optimize_streaming: true
+)
+```
+
+#### Rails Controller Example
+
+```ruby
+class TextToSpeechController < ApplicationController
+  def create
+    client = ElevenlabsClient.new
+    
+    audio_data = client.text_to_speech.convert(
+      params[:voice_id],
+      params[:text],
+      voice_settings: {
+        stability: params[:stability]&.to_f || 0.5,
+        similarity_boost: params[:similarity_boost]&.to_f || 0.8
+      }
+    )
+    
+    # Return the audio file
+    send_data audio_data, 
+              type: 'audio/mpeg', 
+              filename: 'speech.mp3',
+              disposition: 'attachment'
+  rescue ElevenlabsClient::AuthenticationError
+    render json: { error: 'Invalid API key' }, status: :unauthorized
+  rescue ElevenlabsClient::RateLimitError
+    render json: { error: 'Rate limit exceeded' }, status: :too_many_requests
+  rescue ElevenlabsClient::ValidationError => e
+    render json: { error: 'Invalid parameters', details: e.message }, status: :bad_request
+  end
+end
+```
+
 ## Supported Language Codes
 
 Common target languages include:
