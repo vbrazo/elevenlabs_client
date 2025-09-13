@@ -136,6 +136,13 @@ The client provides access to text-to-speech functionality through the `client.t
 - `client.text_to_speech.convert(voice_id, text, **options)` - Convert text to speech
 - `client.text_to_speech.text_to_speech(voice_id, text, **options)` - Alias for convert method
 
+### Available Text-to-Speech Streaming Methods
+
+The client provides access to real-time streaming text-to-speech through the `client.text_to_speech_stream` interface:
+
+- `client.text_to_speech_stream.stream(voice_id, text, **options) { |chunk| }` - Stream text-to-speech in real-time
+- `client.text_to_speech_stream.text_to_speech_stream(voice_id, text, **options) { |chunk| }` - Alias for stream method
+
 #### Text-to-Speech Usage Examples
 
 ```ruby
@@ -185,6 +192,93 @@ audio_data = client.text_to_speech.convert(
   },
   optimize_streaming: true
 )
+```
+
+#### Text-to-Speech Streaming Usage Examples
+
+```ruby
+# Basic streaming - process audio chunks as they arrive
+voice_id = "21m00Tcm4TlvDq8ikWAM"
+audio_chunks = []
+
+client.text_to_speech_stream.stream(voice_id, "Hello, this is streaming audio!") do |chunk|
+  audio_chunks << chunk
+  # Process each chunk immediately (e.g., play audio, save to file, stream to client)
+  puts "Received chunk of size: #{chunk.bytesize} bytes"
+end
+
+# Save all chunks to a file
+File.open("streaming_output.mp3", "wb") do |file|
+  audio_chunks.each { |chunk| file.write(chunk) }
+end
+
+# With custom model and output format
+client.text_to_speech_stream.stream(
+  voice_id,
+  "This uses a custom model and format.",
+  model_id: "eleven_turbo_v2",
+  output_format: "pcm_16000"
+) do |chunk|
+  # Process PCM audio chunk
+  process_pcm_chunk(chunk)
+end
+
+# With voice settings
+client.text_to_speech_stream.stream(
+  voice_id,
+  "Custom voice settings for streaming.",
+  voice_settings: {
+    stability: 0.7,
+    similarity_boost: 0.8
+  }
+) do |chunk|
+  # Stream directly to response in Rails
+  response.stream.write(chunk)
+end
+
+# Real-time processing example
+total_size = 0
+start_time = Time.now
+
+client.text_to_speech_stream.stream(voice_id, "Real-time audio processing example.") do |chunk|
+  total_size += chunk.bytesize
+  elapsed = Time.now - start_time
+  
+  puts "Chunk: #{chunk.bytesize} bytes, Total: #{total_size} bytes, Time: #{elapsed.round(2)}s"
+  
+  # Could stream to WebSocket, save to file, or process in real-time
+  websocket.send(chunk) if websocket&.open?
+end
+```
+
+#### Rails Streaming Controller Example
+
+```ruby
+class StreamingAudioController < ApplicationController
+  include ActionController::Live
+
+  def stream_text_to_speech
+    response.headers['Content-Type'] = 'audio/mpeg'
+    response.headers['Cache-Control'] = 'no-cache'
+    response.headers['Transfer-Encoding'] = 'chunked'
+    
+    client = ElevenlabsClient.new
+    
+    begin
+      client.text_to_speech_stream.stream(
+        params[:voice_id],
+        params[:text],
+        model_id: params[:model_id] || "eleven_multilingual_v2"
+      ) do |chunk|
+        response.stream.write(chunk)
+      end
+    rescue IOError
+      # Client disconnected
+    ensure
+      response.stream.close
+    end
+  end
+end
 ```
 
 #### Rails Controller Example
