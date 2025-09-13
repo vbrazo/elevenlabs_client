@@ -12,6 +12,7 @@ A comprehensive Ruby client library for the ElevenLabs API, supporting voice syn
 💬 **Dialogue Generation** - Multi-speaker conversations  
 🔊 **Sound Generation** - AI-generated sound effects and ambient audio  
 🎨 **Voice Design** - Create custom voices from text descriptions  
+🎭 **Voice Management** - Create, edit, and manage individual voices  
 🤖 **Models** - List available models and their capabilities  
 📡 **Streaming** - Real-time audio streaming  
 ⚙️ **Configurable** - Flexible configuration options  
@@ -123,6 +124,16 @@ models = client.models.list
 fastest_model = models["models"].min_by { |m| m["token_cost_factor"] }
 puts "Fastest model: #{fastest_model['name']}"
 
+# Voice Management
+voices = client.voices.list
+puts "Total voices: #{voices['voices'].length}"
+
+# Create custom voice from audio samples
+File.open("sample1.mp3", "rb") do |sample|
+  voice = client.voices.create("My Voice", [sample], description: "Custom narrator voice")
+  puts "Created voice: #{voice['voice_id']}"
+end
+
 # Streaming Text-to-Speech
 client.text_to_speech_stream.stream("voice_id", "Streaming text") do |chunk|
   # Process audio chunk in real-time
@@ -140,6 +151,7 @@ end
 - **[Text-to-Dialogue API](docs/TEXT_TO_DIALOGUE.md)** - Multi-speaker conversations
 - **[Sound Generation API](docs/SOUND_GENERATION.md)** - AI-generated sound effects
 - **[Text-to-Voice API](docs/TEXT_TO_VOICE.md)** - Design and create custom voices
+- **[Voice Management API](docs/VOICES.md)** - Manage individual voices (CRUD operations)
 - **[Models API](docs/MODELS.md)** - List available models and capabilities
 
 ### Available Endpoints
@@ -152,6 +164,7 @@ end
 | `client.text_to_dialogue.*` | Dialogue generation | [TEXT_TO_DIALOGUE.md](docs/TEXT_TO_DIALOGUE.md) |
 | `client.sound_generation.*` | Sound effect generation | [SOUND_GENERATION.md](docs/SOUND_GENERATION.md) |
 | `client.text_to_voice.*` | Voice design and creation | [TEXT_TO_VOICE.md](docs/TEXT_TO_VOICE.md) |
+| `client.voices.*` | Voice management (CRUD) | [VOICES.md](docs/VOICES.md) |
 | `client.models.*` | Model information and capabilities | [MODELS.md](docs/MODELS.md) |
 
 ## Configuration Options
@@ -211,7 +224,7 @@ The gem is designed to work seamlessly with Rails applications. See the [example
 - [TextToDialogueController](examples/text_to_dialogue_controller.rb) - Dialogue generation
 - [SoundGenerationController](examples/sound_generation_controller.rb) - Sound effects
 - [TextToVoiceController](examples/text_to_voice_controller.rb) - Voice design and creation
-- [Models](examples/models.rb) - Models
+- [VoicesController](examples/voices_controller.rb) - Voice management (CRUD operations)
 
 ## Development
 
