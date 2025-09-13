@@ -12,11 +12,15 @@ require_relative "elevenlabs_client/endpoints/text_to_voice"
 require_relative "elevenlabs_client/endpoints/models"
 require_relative "elevenlabs_client/endpoints/voices"
 require_relative "elevenlabs_client/endpoints/music"
+require_relative "elevenlabs_client/endpoints/audio_isolation"
+require_relative "elevenlabs_client/endpoints/audio_native"
+require_relative "elevenlabs_client/endpoints/forced_alignment"
+require_relative "elevenlabs_client/endpoints/speech_to_speech"
+require_relative "elevenlabs_client/endpoints/speech_to_text"
+require_relative "elevenlabs_client/endpoints/websocket_text_to_speech"
 require_relative "elevenlabs_client/client"
 
 module ElevenlabsClient
-  class Error < StandardError; end
-
   # Convenience method to create a new client
   def self.new(**options)
     Client.new(**options)

@@ -4,17 +4,20 @@ PATH
     elevenlabs_client (0.4.0)
       faraday (~> 2.0)
       faraday-multipart (~> 1.0)
+      websocket-client-simple (~> 0.8)
 
 GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
+    base64 (0.3.0)
     bigdecimal (3.2.3)
     crack (1.0.0)
       bigdecimal
       rexml
     diff-lcs (1.6.2)
+    event_emitter (0.2.6)
     faraday (2.13.4)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -27,6 +30,7 @@ GEM
     json (2.13.2)
     logger (1.7.0)
     multipart-post (2.4.1)
+    mutex_m (0.3.0)
     net-http (0.6.0)
       uri
     public_suffix (6.0.2)
@@ -50,6 +54,12 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    websocket (1.2.11)
+    websocket-client-simple (0.9.0)
+      base64
+      event_emitter
+      mutex_m
+      websocket
 
 PLATFORMS
   arm64-darwin-23

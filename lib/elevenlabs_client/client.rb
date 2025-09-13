@@ -7,7 +7,7 @@ module ElevenlabsClient
   class Client
     DEFAULT_BASE_URL = "https://api.elevenlabs.io"
 
-    attr_reader :base_url, :api_key, :dubs, :text_to_speech, :text_to_speech_stream, :text_to_dialogue, :sound_generation, :text_to_voice, :models, :voices, :music
+    attr_reader :base_url, :api_key, :dubs, :text_to_speech, :text_to_speech_stream, :text_to_dialogue, :sound_generation, :text_to_voice, :models, :voices, :music, :audio_isolation, :audio_native, :forced_alignment, :speech_to_speech, :speech_to_text, :websocket_text_to_speech
 
     def initialize(api_key: nil, base_url: nil, api_key_env: "ELEVENLABS_API_KEY", base_url_env: "ELEVENLABS_BASE_URL")
       @api_key = api_key || fetch_api_key(api_key_env)
@@ -22,6 +22,12 @@ module ElevenlabsClient
       @models = Models.new(self)
       @voices = Voices.new(self)
       @music = Endpoints::Music.new(self)
+      @audio_isolation = AudioIsolation.new(self)
+      @audio_native = AudioNative.new(self)
+      @forced_alignment = ForcedAlignment.new(self)
+      @speech_to_speech = SpeechToSpeech.new(self)
+      @speech_to_text = SpeechToText.new(self)
+      @websocket_text_to_speech = WebSocketTextToSpeech.new(self)
     end
 
     # Makes an authenticated GET request

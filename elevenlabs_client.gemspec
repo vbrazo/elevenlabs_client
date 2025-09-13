@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
   # Runtime dependencies
   spec.add_dependency "faraday", "~> 2.0"
   spec.add_dependency "faraday-multipart", "~> 1.0"
+  spec.add_dependency "websocket-client-simple", "~> 0.8"
 
   # Development dependencies
   spec.add_development_dependency "bundler", "~> 2.0"

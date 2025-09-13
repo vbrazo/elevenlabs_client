@@ -209,6 +209,40 @@ module ElevenlabsClient
       @client.get("/v1/dubbing/resource/#{dubbing_id}/speaker/#{speaker_id}/similar-voices")
     end
 
+    # GET /v1/dubbing/{dubbing_id}/audio/{language_code}
+    # Returns dub as a streamed MP3 or MP4 file
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/get-dubbed-audio
+    #
+    # @param dubbing_id [String] ID of the dubbing project
+    # @param language_code [String] ID of the language
+    # @return [String] Binary audio/video data
+    def get_dubbed_audio(dubbing_id, language_code)
+      endpoint = "/v1/dubbing/#{dubbing_id}/audio/#{language_code}"
+      @client.get(endpoint)
+    end
+
+    # GET /v1/dubbing/{dubbing_id}/transcript/{language_code}
+    # Returns transcript for the dub as an SRT or WEBVTT file
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/get-dubbed-transcript
+    #
+    # @param dubbing_id [String] ID of the dubbing project
+    # @param language_code [String] ID of the language
+    # @param options [Hash] Optional parameters
+    # @option options [String] :format_type Format to use ("srt" or "webvtt", default: "srt")
+    # @return [String] Transcript in specified format
+    def get_dubbed_transcript(dubbing_id, language_code, **options)
+      endpoint = "/v1/dubbing/#{dubbing_id}/transcript/#{language_code}"
+      
+      params = {}
+      params[:format_type] = options[:format_type] if options[:format_type]
+
+      @client.get(endpoint, params)
+    end
+
+    # Alias methods for convenience
+    alias_method :dubbed_audio, :get_dubbed_audio
+    alias_method :dubbed_transcript, :get_dubbed_transcript
+
     private
 
     attr_reader :client
