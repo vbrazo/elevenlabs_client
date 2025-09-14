@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-09-14
+
+### Added
+
+- Text-to-Speech With Timestamps
+  - `client.text_to_speech_with_timestamps.generate(voice_id, text, **options)`
+  - Character-level `alignment` and `normalized_alignment`
+- Streaming Text-to-Speech With Timestamps
+  - `client.text_to_speech_stream_with_timestamps.stream(voice_id, text, **options, &block)`
+  - JSON streaming with audio chunks and timing per chunk
+- WebSocket Streaming Enhancements
+  - Single-context and multi-context improvements; correct query param ordering and filtering
+  - Docs: `docs/WEBSOCKET_STREAMING.md`
+- Text-to-Dialogue Streaming
+  - `client.text_to_dialogue_stream.stream(inputs, **options, &block)`
+  - Docs: `docs/TEXT_TO_DIALOGUE_STREAMING.md`
+
+### Improved
+
+- Client streaming JSON handling for timestamp streams (`post_streaming_with_timestamps`)
+- Robust parsing and block yielding across streaming tests
+- URL query parameter ordering to match expectations in tests
+
+### Tests
+
+- Added comprehensive unit and integration tests for all new endpoints
+- Full suite now: 687 examples, 0 failures
+
+### Notes
+
+- These features require valid ElevenLabs API keys and correct model/voice permissions
+
 ## [0.4.0] - 2025-09-12
 
 ### Added
