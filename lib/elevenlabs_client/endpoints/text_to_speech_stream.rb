@@ -8,6 +8,7 @@ module ElevenlabsClient
 
     # POST /v1/text-to-speech/{voice_id}/stream
     # Stream text-to-speech audio in real-time chunks
+    # Documentation: https://elevenlabs.io/docs/api-reference/text-to-speech/stream
     #
     # @param voice_id [String] The ID of the voice to use
     # @param text [String] Text to synthesize

@@ -8,6 +8,7 @@ module ElevenlabsClient
 
     # POST /v1/dubbing (multipart)
     # Creates a new dubbing job
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/create
     # 
     # @param file_io [IO] The audio/video file to dub
     # @param filename [String] Original filename 
@@ -19,8 +20,9 @@ module ElevenlabsClient
       payload = {
         file: @client.file_part(file_io, filename),
         mode: "automatic",
-        target_languages: target_languages,
-        name: name
+        name: name,
+        target_lang: target_languages.first,
+        num_speakers: 1
       }.compact.merge(options)
 
       @client.post_multipart("/v1/dubbing", payload)
@@ -28,6 +30,7 @@ module ElevenlabsClient
 
     # GET /v1/dubbing/{id}
     # Retrieves dubbing job details
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/get
     #
     # @param dubbing_id [String] The dubbing job ID
     # @return [Hash] Dubbing job details
@@ -37,6 +40,7 @@ module ElevenlabsClient
 
     # GET /v1/dubbing
     # Lists dubbing jobs
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing
     #
     # @param params [Hash] Query parameters (dubbing_status, page_size, etc.)
     # @return [Hash] List of dubbing jobs
@@ -46,6 +50,7 @@ module ElevenlabsClient
 
     # GET /v1/dubbing/{id}/resources
     # Retrieves dubbing resources for editing (if dubbing_studio: true was used)
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/get-resource
     #
     # @param dubbing_id [String] The dubbing job ID
     # @return [Hash] Dubbing resources
@@ -55,6 +60,7 @@ module ElevenlabsClient
 
     # DELETE /v1/dubbing/{id}
     # Deletes a dubbing project
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/delete
     #
     # @param dubbing_id [String] The dubbing job ID
     # @return [Hash] Response with status
@@ -64,6 +70,7 @@ module ElevenlabsClient
 
     # GET /v1/dubbing/resource/{dubbing_id}
     # Gets dubbing resource with detailed information including segments, speakers, etc.
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/get-resource
     #
     # @param dubbing_id [String] The dubbing job ID
     # @return [Hash] Detailed dubbing resource information
@@ -73,6 +80,7 @@ module ElevenlabsClient
 
     # POST /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}/segment
     # Creates a new segment in dubbing resource
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/create-segment
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param speaker_id [String] The speaker ID
@@ -94,6 +102,7 @@ module ElevenlabsClient
 
     # DELETE /v1/dubbing/resource/{dubbing_id}/segment/{segment_id}
     # Deletes a single segment from the dubbing
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/delete-segment
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param segment_id [String] The segment ID
@@ -104,6 +113,7 @@ module ElevenlabsClient
 
     # PATCH /v1/dubbing/resource/{dubbing_id}/segment/{segment_id}/{language}
     # Updates a single segment with new text and/or start/end times
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/update-segment
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param segment_id [String] The segment ID
@@ -124,6 +134,7 @@ module ElevenlabsClient
 
     # POST /v1/dubbing/resource/{dubbing_id}/transcribe
     # Regenerates transcriptions for specified segments
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/transcribe-segment
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param segments [Array<String>] List of segment IDs to transcribe
@@ -135,6 +146,7 @@ module ElevenlabsClient
 
     # POST /v1/dubbing/resource/{dubbing_id}/translate
     # Regenerates translations for specified segments/languages
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/translate-segment
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param segments [Array<String>] List of segment IDs to translate
@@ -151,6 +163,7 @@ module ElevenlabsClient
 
     # POST /v1/dubbing/resource/{dubbing_id}/dub
     # Regenerates dubs for specified segments/languages
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/dub-segment
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param segments [Array<String>] List of segment IDs to dub
@@ -167,6 +180,7 @@ module ElevenlabsClient
 
     # POST /v1/dubbing/resource/{dubbing_id}/render/{language}
     # Renders the output media for a language
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/render-project
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param language [String] The language to render
@@ -184,6 +198,7 @@ module ElevenlabsClient
 
     # PATCH /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}
     # Updates speaker metadata such as voice
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/update-speaker
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param speaker_id [String] The speaker ID
@@ -201,6 +216,7 @@ module ElevenlabsClient
 
     # GET /v1/dubbing/resource/{dubbing_id}/speaker/{speaker_id}/similar-voices
     # Gets similar voices for a speaker
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/resources/get-similar-voices
     #
     # @param dubbing_id [String] The dubbing job ID
     # @param speaker_id [String] The speaker ID
@@ -211,7 +227,7 @@ module ElevenlabsClient
 
     # GET /v1/dubbing/{dubbing_id}/audio/{language_code}
     # Returns dub as a streamed MP3 or MP4 file
-    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/get-dubbed-audio
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/audio/get
     #
     # @param dubbing_id [String] ID of the dubbing project
     # @param language_code [String] ID of the language
@@ -223,7 +239,7 @@ module ElevenlabsClient
 
     # GET /v1/dubbing/{dubbing_id}/transcript/{language_code}
     # Returns transcript for the dub as an SRT or WEBVTT file
-    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/get-dubbed-transcript
+    # Documentation: https://elevenlabs.io/docs/api-reference/dubbing/transcript/get-transcript-for-dub
     #
     # @param dubbing_id [String] ID of the dubbing project
     # @param language_code [String] ID of the language
