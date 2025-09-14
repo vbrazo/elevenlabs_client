@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
+RSpec.describe "TextToSpeech#convert_with_timestamps" do
   let(:api_key) { "test_api_key" }
   let(:client) { ElevenlabsClient::Client.new(api_key: api_key) }
-  let(:text_to_speech_with_timestamps) { described_class.new(client) }
+  let(:text_to_speech_with_timestamps) { ElevenlabsClient::TextToSpeech.new(client) }
   let(:voice_id) { "21m00Tcm4TlvDq8ikWAM" }
   let(:text) { "Hello, this is a test for timestamps." }
 
-  describe "#generate" do
+  describe "#convert_with_timestamps" do
     let(:response_body) do
       {
         "audio_base64" => "base64_encoded_audio_string",
@@ -35,7 +35,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
 
     context "with required parameters only" do
       it "generates speech with timestamps successfully" do
-        result = text_to_speech_with_timestamps.generate(voice_id, text)
+        result = text_to_speech_with_timestamps.convert_with_timestamps(voice_id, text)
 
         expect(result).to eq(response_body)
         expect(result["audio_base64"]).to eq("base64_encoded_audio_string")
@@ -44,7 +44,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       end
 
       it "sends the correct request" do
-        text_to_speech_with_timestamps.generate(voice_id, text)
+        text_to_speech_with_timestamps.convert_with_timestamps(voice_id, text)
 
         expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}/with-timestamps")
           .with(
@@ -61,7 +61,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       let(:model_id) { "eleven_multilingual_v2" }
 
       it "includes model_id in the request" do
-        text_to_speech_with_timestamps.generate(voice_id, text, model_id: model_id)
+        text_to_speech_with_timestamps.convert_with_timestamps(voice_id, text, model_id: model_id)
 
         expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}/with-timestamps")
           .with(
@@ -84,7 +84,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       end
 
       it "includes voice_settings in the request" do
-        text_to_speech_with_timestamps.generate(voice_id, text, voice_settings: voice_settings)
+        text_to_speech_with_timestamps.convert_with_timestamps(voice_id, text, voice_settings: voice_settings)
 
         expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}/with-timestamps")
           .with(
@@ -110,7 +110,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       end
 
       it "includes query parameters in the URL" do
-        text_to_speech_with_timestamps.generate(
+        text_to_speech_with_timestamps.convert_with_timestamps(
           voice_id, 
           text, 
           output_format: output_format,
@@ -137,7 +137,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       let(:apply_text_normalization) { "on" }
 
       it "includes all options in the request" do
-        text_to_speech_with_timestamps.generate(
+        text_to_speech_with_timestamps.convert_with_timestamps(
           voice_id, 
           text, 
           model_id: model_id,
@@ -172,7 +172,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       end
 
       it "includes pronunciation_dictionary_locators in the request" do
-        text_to_speech_with_timestamps.generate(
+        text_to_speech_with_timestamps.convert_with_timestamps(
           voice_id, 
           text, 
           pronunciation_dictionary_locators: pronunciation_dictionary_locators
@@ -193,7 +193,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       let(:next_request_ids) { ["req_3", "req_4"] }
 
       it "includes request IDs in the request" do
-        text_to_speech_with_timestamps.generate(
+        text_to_speech_with_timestamps.convert_with_timestamps(
           voice_id, 
           text, 
           previous_request_ids: previous_request_ids,
@@ -216,7 +216,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       let(:use_pvc_as_ivc) { false }
 
       it "includes boolean options correctly" do
-        text_to_speech_with_timestamps.generate(
+        text_to_speech_with_timestamps.convert_with_timestamps(
           voice_id, 
           text, 
           apply_language_text_normalization: apply_language_text_normalization,
@@ -243,7 +243,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
 
         it "raises AuthenticationError" do
           expect {
-            text_to_speech_with_timestamps.generate(voice_id, text)
+            text_to_speech_with_timestamps.convert_with_timestamps(voice_id, text)
           }.to raise_error(ElevenlabsClient::AuthenticationError)
         end
       end
@@ -256,7 +256,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
 
         it "raises RateLimitError" do
           expect {
-            text_to_speech_with_timestamps.generate(voice_id, text)
+            text_to_speech_with_timestamps.convert_with_timestamps(voice_id, text)
           }.to raise_error(ElevenlabsClient::RateLimitError, "Rate limit exceeded")
         end
       end
@@ -269,7 +269,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
 
         it "raises UnprocessableEntityError" do
           expect {
-            text_to_speech_with_timestamps.generate(voice_id, text)
+            text_to_speech_with_timestamps.convert_with_timestamps(voice_id, text)
           }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
         end
       end
@@ -282,7 +282,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
 
         it "raises APIError" do
           expect {
-            text_to_speech_with_timestamps.generate(voice_id, text)
+            text_to_speech_with_timestamps.convert_with_timestamps(voice_id, text)
           }.to raise_error(ElevenlabsClient::APIError)
         end
       end
@@ -301,7 +301,7 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       end
 
       it "uses the correct voice ID in the endpoint" do
-        text_to_speech_with_timestamps.generate(different_voice_id, text)
+        text_to_speech_with_timestamps.convert_with_timestamps(different_voice_id, text)
 
         expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{different_voice_id}/with-timestamps")
       end
@@ -311,42 +311,13 @@ RSpec.describe ElevenlabsClient::TextToSpeechWithTimestamps do
       let(:long_text) { "This is a much longer text that should be converted to speech with character-level timing information. It contains multiple sentences and should test the API's ability to handle longer content with precise timestamps." }
 
       it "handles longer text content" do
-        text_to_speech_with_timestamps.generate(voice_id, long_text)
+        text_to_speech_with_timestamps.convert_with_timestamps(voice_id, long_text)
 
         expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}/with-timestamps")
           .with(
             body: { text: long_text }.to_json
           )
       end
-    end
-  end
-
-  describe "#text_to_speech_with_timestamps" do
-    let(:response_body) do
-      {
-        "audio_base64" => "base64_encoded_audio_string",
-        "alignment" => {
-          "characters" => ["H", "e", "l", "l", "o"],
-          "character_start_times_seconds" => [0.0, 0.1, 0.2, 0.3, 0.4],
-          "character_end_times_seconds" => [0.1, 0.2, 0.3, 0.4, 0.5]
-        }
-      }
-    end
-
-    before do
-      stub_request(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}/with-timestamps")
-        .to_return(
-          status: 200,
-          body: response_body.to_json,
-          headers: { "Content-Type" => "application/json" }
-        )
-    end
-
-    it "is an alias for generate method" do
-      result = text_to_speech_with_timestamps.text_to_speech_with_timestamps(voice_id, text)
-
-      expect(result).to eq(response_body)
-      expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}/with-timestamps")
     end
   end
 end

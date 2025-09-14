@@ -16,7 +16,6 @@ module ElevenlabsClient
       @client.get(endpoint)
     end
 
-    # Alias for backward compatibility and convenience
     alias_method :list_models, :list
 
     private

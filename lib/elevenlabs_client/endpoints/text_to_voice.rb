@@ -84,7 +84,6 @@ module ElevenlabsClient
       @client.get(endpoint)
     end
 
-    # Alias methods for backward compatibility and convenience
     alias_method :design_voice, :design
     alias_method :create_from_generated_voice, :create
 

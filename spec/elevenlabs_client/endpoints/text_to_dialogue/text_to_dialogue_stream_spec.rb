@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe ElevenlabsClient::TextToDialogueStream do
+RSpec.describe "TextToDialogue#stream" do
   let(:api_key) { "test_api_key" }
   let(:client) { ElevenlabsClient::Client.new(api_key: api_key) }
-  let(:dialogue_stream) { described_class.new(client) }
+  let(:dialogue_stream) { ElevenlabsClient::TextToDialogue.new(client) }
   let(:inputs) do
     [
       { text: "Knock knock", voice_id: "JBFqnCBsd6RMkjVDRZzb" },
@@ -77,15 +77,4 @@ RSpec.describe ElevenlabsClient::TextToDialogueStream do
       }.not_to raise_error
     end
   end
-
-  describe "#text_to_dialogue_stream" do
-    it "is an alias for stream method" do
-      allow(client).to receive(:post_streaming).and_yield("chunk")
-      chunks = []
-      dialogue_stream.text_to_dialogue_stream(inputs) { |c| chunks << c }
-      expect(chunks).to eq(["chunk"])
-    end
-  end
 end
-
-

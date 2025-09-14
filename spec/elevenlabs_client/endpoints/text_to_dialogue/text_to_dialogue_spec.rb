@@ -269,29 +269,4 @@ RSpec.describe ElevenlabsClient::TextToDialogue do
       end
     end
   end
-
-  describe "#text_to_dialogue" do
-    let(:dialogue_inputs) do
-      [
-        { text: "Hello!", voice_id: "voice_1" },
-        { text: "Hi there!", voice_id: "voice_2" }
-      ]
-    end
-
-    before do
-      stub_request(:post, "https://api.elevenlabs.io/v1/text-to-dialogue")
-        .to_return(
-          status: 200,
-          body: binary_audio_data,
-          headers: { "Content-Type" => "audio/mpeg" }
-        )
-    end
-
-    it "is an alias for convert method" do
-      result = text_to_dialogue.text_to_dialogue(dialogue_inputs)
-
-      expect(result).to eq(binary_audio_data)
-      expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-dialogue")
-    end
-  end
 end

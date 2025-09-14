@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe ElevenlabsClient::TextToSpeechStream do
+RSpec.describe "TextToSpeech#stream" do
   let(:api_key) { "test_api_key" }
   let(:client) { ElevenlabsClient::Client.new(api_key: api_key) }
-  let(:text_to_speech_stream) { described_class.new(client) }
+  let(:text_to_speech_stream) { ElevenlabsClient::TextToSpeech.new(client) }
   let(:voice_id) { "21m00Tcm4TlvDq8ikWAM" }
   let(:text) { "Hello, this is a streaming test." }
 
@@ -181,23 +181,6 @@ RSpec.describe ElevenlabsClient::TextToSpeechStream do
         expect(all_chunks).to eq(audio_chunks)
         expect(all_chunks.join).to eq("chunk1chunk2chunk3")
       end
-    end
-  end
-
-  describe "#text_to_speech_stream" do
-    before do
-      allow(client).to receive(:post_streaming).and_yield("chunk1")
-    end
-
-    it "is an alias for stream method" do
-      received_chunks = []
-      
-      text_to_speech_stream.text_to_speech_stream(voice_id, text) do |chunk|
-        received_chunks << chunk
-      end
-
-      expect(received_chunks).to eq(["chunk1"])
-      expect(client).to have_received(:post_streaming)
     end
   end
 

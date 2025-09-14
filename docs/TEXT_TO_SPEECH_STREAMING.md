@@ -4,8 +4,8 @@ Stream text-to-speech audio in real-time as it's generated, perfect for live app
 
 ## Available Methods
 
-- `client.text_to_speech_stream.stream(voice_id, text, **options) { |chunk| }` - Stream text-to-speech in real-time
-- `client.text_to_speech_stream.text_to_speech_stream(voice_id, text, **options) { |chunk| }` - Alias for stream method
+- `client.text_to_speech.stream(voice_id, text, **options) { |chunk| }` - Stream text-to-speech in real-time
+- `client.text_to_speech.text_to_speech_stream(voice_id, text, **options) { |chunk| }` - Alias for stream method
 
 ## Usage Examples
 
@@ -15,7 +15,7 @@ Stream text-to-speech audio in real-time as it's generated, perfect for live app
 voice_id = "21m00Tcm4TlvDq8ikWAM"
 audio_chunks = []
 
-client.text_to_speech_stream.stream(voice_id, "Hello, this is streaming audio!") do |chunk|
+client.text_to_speech.stream(voice_id, "Hello, this is streaming audio!") do |chunk|
   audio_chunks << chunk
   puts "Received chunk of size: #{chunk.bytesize} bytes"
 end
@@ -30,7 +30,7 @@ end
 
 ```ruby
 # With custom model and output format
-client.text_to_speech_stream.stream(
+client.text_to_speech.stream(
   voice_id,
   "This uses a custom model and format.",
   model_id: "eleven_turbo_v2",
@@ -41,7 +41,7 @@ client.text_to_speech_stream.stream(
 end
 
 # With voice settings
-client.text_to_speech_stream.stream(
+client.text_to_speech.stream(
   voice_id,
   "Custom voice settings for streaming.",
   voice_settings: {
@@ -60,7 +60,7 @@ end
 total_size = 0
 start_time = Time.now
 
-client.text_to_speech_stream.stream(voice_id, "Real-time audio processing example.") do |chunk|
+client.text_to_speech.stream(voice_id, "Real-time audio processing example.") do |chunk|
   total_size += chunk.bytesize
   elapsed = Time.now - start_time
   
@@ -91,7 +91,7 @@ class StreamingAudioController < ApplicationController
     client = ElevenlabsClient.new
     
     begin
-      client.text_to_speech_stream.stream(
+      client.text_to_speech.stream(
         params[:voice_id],
         params[:text],
         model_id: params[:model_id] || "eleven_multilingual_v2"
@@ -111,7 +111,7 @@ end
 
 ```ruby
 # Stream to WebSocket channel
-client.text_to_speech_stream.stream(voice_id, text) do |chunk|
+client.text_to_speech.stream(voice_id, text) do |chunk|
   ActionCable.server.broadcast(
     "audio_stream_#{session_id}", 
     { type: 'audio_chunk', data: Base64.encode64(chunk) }
@@ -129,7 +129,7 @@ ActionCable.server.broadcast(
 
 ```ruby
 begin
-  client.text_to_speech_stream.stream(voice_id, text) do |chunk|
+  client.text_to_speech.stream(voice_id, text) do |chunk|
     process_chunk(chunk)
   end
 rescue ElevenlabsClient::AuthenticationError

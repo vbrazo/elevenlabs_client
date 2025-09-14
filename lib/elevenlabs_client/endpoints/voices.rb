@@ -491,7 +491,6 @@ module ElevenlabsClient
       @client.post_multipart(endpoint, payload)
     end
 
-    # Alias methods for backward compatibility and convenience
     alias_method :get_voice, :get
     alias_method :list_voices, :list
     alias_method :create_voice, :create

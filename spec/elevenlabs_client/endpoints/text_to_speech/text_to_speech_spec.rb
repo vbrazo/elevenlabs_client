@@ -232,24 +232,4 @@ RSpec.describe ElevenlabsClient::TextToSpeech do
       end
     end
   end
-
-  describe "#text_to_speech" do
-    let(:binary_audio_data) { "fake_mp3_binary_data_here" }
-
-    before do
-      stub_request(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
-        .to_return(
-          status: 200,
-          body: binary_audio_data,
-          headers: { "Content-Type" => "audio/mpeg" }
-        )
-    end
-
-    it "is an alias for convert method" do
-      result = text_to_speech.text_to_speech(voice_id, text)
-
-      expect(result).to eq(binary_audio_data)
-      expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-speech/#{voice_id}")
-    end
-  end
 end

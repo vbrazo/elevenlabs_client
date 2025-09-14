@@ -33,7 +33,7 @@ client = ElevenlabsClient::Client.new(api_key: "your-api-key")
 voice_id = "21m00Tcm4TlvDq8ikWAM"
 text = "Hello world! This is a test for the API of ElevenLabs."
 
-response = client.text_to_speech_with_timestamps.generate(voice_id, text)
+response = client.text_to_speech.convert_with_timestamps(voice_id, text)
 
 # Access the results
 audio_data = Base64.decode64(response["audio_base64"])
@@ -48,7 +48,7 @@ puts "First character: #{alignment['characters'][0]} at #{alignment['character_s
 
 ```ruby
 # Generate with custom settings
-response = client.text_to_speech_with_timestamps.generate(
+response = client.text_to_speech.convert_with_timestamps(
   voice_id,
   text,
   model_id: "eleven_multilingual_v2",
@@ -73,7 +73,7 @@ The streaming version provides real-time audio chunks with timestamp information
 
 ```ruby
 # Stream speech with timestamps
-client.text_to_speech_stream_with_timestamps.stream(voice_id, text) do |chunk|
+client.text_to_speech.stream_with_timestamps(voice_id, text) do |chunk|
   # Each chunk contains audio and alignment data
   if chunk["audio_base64"]
     audio_data = Base64.decode64(chunk["audio_base64"])
@@ -95,7 +95,7 @@ end
 
 ```ruby
 # Stream with custom options
-client.text_to_speech_stream_with_timestamps.stream(
+client.text_to_speech.stream_with_timestamps(
   voice_id,
   text,
   model_id: "eleven_multilingual_v2",
@@ -201,7 +201,7 @@ voice_id = "21m00Tcm4TlvDq8ikWAM"
 text = "The quick brown fox jumps over the lazy dog."
 
 # Generate speech with timestamps
-response = client.text_to_speech_with_timestamps.generate(voice_id, text)
+response = client.text_to_speech.convert_with_timestamps(voice_id, text)
 
 # Save audio file
 audio_data = Base64.decode64(response["audio_base64"])
@@ -232,7 +232,7 @@ text = "This is a streaming example with character timing information."
 audio_chunks = []
 timing_data = []
 
-client.text_to_speech_stream_with_timestamps.stream(voice_id, text) do |chunk|
+client.text_to_speech.stream_with_timestamps(voice_id, text) do |chunk|
   if chunk["audio_base64"]
     # Collect audio chunks
     audio_data = Base64.decode64(chunk["audio_base64"])
@@ -286,7 +286,7 @@ client = ElevenlabsClient::Client.new(api_key: ENV['ELEVENLABS_API_KEY'])
 voice_id = "21m00Tcm4TlvDq8ikWAM"
 text = "This text will be highlighted as it's spoken!"
 
-response = client.text_to_speech_with_timestamps.generate(voice_id, text)
+response = client.text_to_speech.convert_with_timestamps(voice_id, text)
 
 # Play audio (you would use your preferred audio library)
 # play_audio(Base64.decode64(response["audio_base64"]))
@@ -299,7 +299,7 @@ display_karaoke(text, response["alignment"])
 
 ```ruby
 begin
-  response = client.text_to_speech_with_timestamps.generate(voice_id, text)
+  response = client.text_to_speech.convert_with_timestamps(voice_id, text)
 rescue ElevenlabsClient::AuthenticationError => e
   puts "Authentication failed: #{e.message}"
 rescue ElevenlabsClient::ValidationError => e

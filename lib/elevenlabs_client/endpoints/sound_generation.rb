@@ -36,7 +36,6 @@ module ElevenlabsClient
       @client.post_binary(full_endpoint, request_body)
     end
 
-    # Alias for backward compatibility and convenience
     alias_method :sound_generation, :generate
 
     private

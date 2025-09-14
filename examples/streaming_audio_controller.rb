@@ -29,7 +29,7 @@ class StreamingAudioController < ApplicationController
     options = build_streaming_options
     
     begin
-      client.text_to_speech_stream.stream(
+      client.text_to_speech.stream(
         params[:voice_id],
         params[:text],
         **options
@@ -66,7 +66,7 @@ class StreamingAudioController < ApplicationController
     options = build_streaming_options
     
     begin
-      client.text_to_speech_stream.stream(
+      client.text_to_speech.stream(
         params[:voice_id],
         params[:text],
         **options
@@ -110,7 +110,7 @@ class StreamingAudioController < ApplicationController
     temp_file = Tempfile.new(['tts_audio', '.mp3'])
     
     begin
-      client.text_to_speech_stream.stream(
+      client.text_to_speech.stream(
         params[:voice_id],
         params[:text],
         **options
