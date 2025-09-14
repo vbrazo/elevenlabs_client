@@ -65,7 +65,12 @@ namespace :dev do
 
   desc "Run security audit"
   task :audit do
-    sh "bundle audit"
+    sh "bundle exec bundle-audit check --update"
+  end
+
+  desc "Run all security checks"
+  task :security do
+    Rake::Task["dev:audit"].invoke
   end
 
   desc "Update dependencies"
@@ -136,8 +141,8 @@ namespace :release do
     puts "🧹 Running linter..."
     Rake::Task["dev:lint"].invoke
     
-    puts "🔒 Running security audit..."
-    Rake::Task["dev:audit"].invoke
+    puts "🔒 Running security checks..."
+    Rake::Task["dev:security"].invoke
     
     puts "📦 Building gem..."
     Rake::Task["gem:build"].invoke
@@ -228,7 +233,8 @@ task :help do
     🔧 Development:
       rake dev:lint           - Run linter
       rake dev:lint_fix       - Auto-fix linting issues
-      rake dev:audit          - Run security audit
+      rake dev:audit          - Run bundler-audit
+      rake dev:security       - Run security checks
       rake dev:update         - Update dependencies
       rake dev:outdated       - Check outdated dependencies
 
