@@ -8,7 +8,7 @@ module ElevenlabsClient
   class Client
     DEFAULT_BASE_URL = "https://api.elevenlabs.io"
 
-    attr_reader :base_url, :api_key, :dubs, :text_to_speech, :text_to_speech_stream, :text_to_speech_with_timestamps, :text_to_speech_stream_with_timestamps, :text_to_dialogue, :sound_generation, :text_to_voice, :models, :voices, :music, :audio_isolation, :audio_native, :forced_alignment, :speech_to_speech, :speech_to_text, :websocket_text_to_speech
+    attr_reader :base_url, :api_key, :dubs, :text_to_speech, :text_to_speech_stream, :text_to_speech_with_timestamps, :text_to_speech_stream_with_timestamps, :text_to_dialogue, :text_to_dialogue_stream, :sound_generation, :text_to_voice, :models, :voices, :music, :audio_isolation, :audio_native, :forced_alignment, :speech_to_speech, :speech_to_text, :websocket_text_to_speech
 
     def initialize(api_key: nil, base_url: nil, api_key_env: "ELEVENLABS_API_KEY", base_url_env: "ELEVENLABS_BASE_URL")
       @api_key = api_key || fetch_api_key(api_key_env)
@@ -20,6 +20,7 @@ module ElevenlabsClient
       @text_to_speech_with_timestamps = TextToSpeechWithTimestamps.new(self)
       @text_to_speech_stream_with_timestamps = TextToSpeechStreamWithTimestamps.new(self)
       @text_to_dialogue = TextToDialogue.new(self)
+      @text_to_dialogue_stream = TextToDialogueStream.new(self)
       @sound_generation = SoundGeneration.new(self)
       @text_to_voice = TextToVoice.new(self)
       @models = Models.new(self)
