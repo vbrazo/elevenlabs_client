@@ -2,12 +2,13 @@
 
 require "faraday"
 require "faraday/multipart"
+require "json"
 
 module ElevenlabsClient
   class Client
     DEFAULT_BASE_URL = "https://api.elevenlabs.io"
 
-    attr_reader :base_url, :api_key, :dubs, :text_to_speech, :text_to_speech_stream, :text_to_dialogue, :sound_generation, :text_to_voice, :models, :voices, :music, :audio_isolation, :audio_native, :forced_alignment, :speech_to_speech, :speech_to_text, :websocket_text_to_speech
+    attr_reader :base_url, :api_key, :dubs, :text_to_speech, :text_to_speech_stream, :text_to_speech_with_timestamps, :text_to_speech_stream_with_timestamps, :text_to_dialogue, :sound_generation, :text_to_voice, :models, :voices, :music, :audio_isolation, :audio_native, :forced_alignment, :speech_to_speech, :speech_to_text, :websocket_text_to_speech
 
     def initialize(api_key: nil, base_url: nil, api_key_env: "ELEVENLABS_API_KEY", base_url_env: "ELEVENLABS_BASE_URL")
       @api_key = api_key || fetch_api_key(api_key_env)
@@ -16,6 +17,8 @@ module ElevenlabsClient
       @dubs = Dubs.new(self)
       @text_to_speech = TextToSpeech.new(self)
       @text_to_speech_stream = TextToSpeechStream.new(self)
+      @text_to_speech_with_timestamps = TextToSpeechWithTimestamps.new(self)
+      @text_to_speech_stream_with_timestamps = TextToSpeechStreamWithTimestamps.new(self)
       @text_to_dialogue = TextToDialogue.new(self)
       @sound_generation = SoundGeneration.new(self)
       @text_to_voice = TextToVoice.new(self)
@@ -144,6 +147,44 @@ module ElevenlabsClient
         # Set up streaming callback
         req.options.on_data = proc do |chunk, _|
           block.call(chunk) if block_given?
+        end
+      end
+
+      handle_response(response)
+    end
+
+    # Makes an authenticated POST request with streaming response for timestamp data
+    # @param path [String] API endpoint path
+    # @param body [Hash, nil] Request body
+    # @param block [Proc] Block to handle each JSON chunk with timestamps
+    # @return [Faraday::Response] Response object
+    def post_streaming_with_timestamps(path, body = nil, &block)
+      buffer = ""
+      
+      response = @conn.post(path) do |req|
+        req.headers["xi-api-key"] = api_key
+        req.headers["Content-Type"] = "application/json"
+        req.body = body.to_json if body
+        
+        # Set up streaming callback for JSON chunks
+        req.options.on_data = proc do |chunk, _|
+          if block_given?
+            buffer += chunk
+            
+            # Process complete JSON objects
+            while buffer.include?("\n")
+              line, buffer = buffer.split("\n", 2)
+              next if line.strip.empty?
+              
+              begin
+                json_data = JSON.parse(line)
+                block.call(json_data)
+              rescue JSON::ParserError
+                # Skip malformed JSON lines
+                next
+              end
+            end
+          end
         end
       end
 

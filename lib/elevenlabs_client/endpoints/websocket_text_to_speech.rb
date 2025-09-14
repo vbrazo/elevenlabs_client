@@ -29,22 +29,17 @@ module ElevenlabsClient
     def connect_stream_input(voice_id, **options)
       endpoint = "/v1/text-to-speech/#{voice_id}/stream-input"
       
-      # Build query parameters
-      query_params = {}
-      query_params[:model_id] = options[:model_id] if options[:model_id]
-      query_params[:language_code] = options[:language_code] if options[:language_code]
-      query_params[:enable_logging] = options[:enable_logging] unless options[:enable_logging].nil?
-      query_params[:enable_ssml_parsing] = options[:enable_ssml_parsing] unless options[:enable_ssml_parsing].nil?
-      query_params[:output_format] = options[:output_format] if options[:output_format]
-      query_params[:inactivity_timeout] = options[:inactivity_timeout] if options[:inactivity_timeout]
-      query_params[:sync_alignment] = options[:sync_alignment] unless options[:sync_alignment].nil?
-      query_params[:auto_mode] = options[:auto_mode] unless options[:auto_mode].nil?
-      query_params[:apply_text_normalization] = options[:apply_text_normalization] if options[:apply_text_normalization]
-      query_params[:seed] = options[:seed] if options[:seed]
-      
-      # Add query parameters to endpoint if any
-      if query_params.any?
-        query_string = query_params.map { |k, v| "#{k}=#{v}" }.join("&")
+      # Build query parameters in the same order as provided in options
+      allowed_keys = [:model_id, :language_code, :enable_logging, :enable_ssml_parsing, :output_format, :inactivity_timeout, :sync_alignment, :auto_mode, :apply_text_normalization, :seed]
+      pairs = []
+      options.each do |k, v|
+        next unless allowed_keys.include?(k)
+        next if v.nil?
+        next if (k == :language_code || k == :apply_text_normalization) && v.to_s.empty?
+        pairs << [k, v]
+      end
+      if pairs.any?
+        query_string = pairs.map { |k, v| "#{k}=#{v}" }.join("&")
         endpoint += "?#{query_string}"
       end
       
@@ -63,22 +58,17 @@ module ElevenlabsClient
     def connect_multi_stream_input(voice_id, **options)
       endpoint = "/v1/text-to-speech/#{voice_id}/multi-stream-input"
       
-      # Build query parameters (same as single stream)
-      query_params = {}
-      query_params[:model_id] = options[:model_id] if options[:model_id]
-      query_params[:language_code] = options[:language_code] if options[:language_code]
-      query_params[:enable_logging] = options[:enable_logging] unless options[:enable_logging].nil?
-      query_params[:enable_ssml_parsing] = options[:enable_ssml_parsing] unless options[:enable_ssml_parsing].nil?
-      query_params[:output_format] = options[:output_format] if options[:output_format]
-      query_params[:inactivity_timeout] = options[:inactivity_timeout] if options[:inactivity_timeout]
-      query_params[:sync_alignment] = options[:sync_alignment] unless options[:sync_alignment].nil?
-      query_params[:auto_mode] = options[:auto_mode] unless options[:auto_mode].nil?
-      query_params[:apply_text_normalization] = options[:apply_text_normalization] if options[:apply_text_normalization]
-      query_params[:seed] = options[:seed] if options[:seed]
-      
-      # Add query parameters to endpoint if any
-      if query_params.any?
-        query_string = query_params.map { |k, v| "#{k}=#{v}" }.join("&")
+      # Build query parameters in the same order as provided in options
+      allowed_keys = [:model_id, :language_code, :enable_logging, :enable_ssml_parsing, :output_format, :inactivity_timeout, :sync_alignment, :auto_mode, :apply_text_normalization, :seed]
+      pairs = []
+      options.each do |k, v|
+        next unless allowed_keys.include?(k)
+        next if v.nil?
+        next if (k == :language_code || k == :apply_text_normalization) && v.to_s.empty?
+        pairs << [k, v]
+      end
+      if pairs.any?
+        query_string = pairs.map { |k, v| "#{k}=#{v}" }.join("&")
         endpoint += "?#{query_string}"
       end
       
