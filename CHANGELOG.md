@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2024-09-15
+
+### Added
+- **🏢 Admin API Suite** - Complete administrative functionality for account management
+  - **User Management** (`client.user.*`) - Access comprehensive user account information, subscription details, and feature availability
+  - **Usage Analytics** (`client.usage.*`) - Monitor character usage with detailed analytics, breakdowns by voice/model/source, and trend analysis
+  - **Voice Library** (`client.voice_library.*`) - Browse and manage community shared voices with advanced filtering and search capabilities
+  - All admin endpoints include comprehensive error handling and response validation
+
+### Enhanced
+- **📚 Documentation Expansion** - Comprehensive documentation for all admin functionality
+  - Added `docs/admin/USER.md` - User account and subscription management guide (589 lines)
+  - Added `docs/admin/USAGE.md` - Usage analytics and monitoring guide (604 lines)
+  - Added `docs/admin/VOICE_LIBRARY.md` - Voice library browsing and management guide (883 lines)
+  - Added `docs/admin/README.md` - Admin API overview and quick start guide (472 lines)
+  - Updated main README.md with admin endpoint documentation and examples
+  - Total: 3,512 lines of new admin documentation
+
+- **🎯 Example Controllers** - Production-ready Rails integration examples
+  - Added `examples/admin/user_controller.rb` - User dashboard with health monitoring (767 lines)
+  - Added `examples/admin/usage_controller.rb` - Usage analytics dashboard with real-time monitoring (584 lines)
+  - Added `examples/admin/voice_library_controller.rb` - Voice library browser with curation tools (844 lines)
+  - Added `examples/admin/models_controller.rb` - Model comparison and selection guide (983 lines)
+  - All controllers include comprehensive error handling, JSON API support, and export functionality
+
+### Improved
+- **🧪 Test Coverage** - Comprehensive testing for all admin functionality
+  - Added 88 endpoint tests covering all admin API methods and error scenarios
+  - Added 77 integration tests covering real-world usage patterns and workflows
+  - All tests include proper error handling validation and response structure verification
+  - Total: 165 new tests with 100% pass rate
+
+- **🔧 Client Integration** - Seamless integration of admin endpoints
+  - Updated `Client` class to expose all admin endpoints (`usage`, `user`, `voice_library`)
+  - Enhanced error handling for admin-specific scenarios
+  - Consistent API patterns across all admin endpoints
+  - Proper namespacing under `ElevenlabsClient::Admin` module
+
+### Technical Improvements
+- **📊 Advanced Analytics** - Sophisticated usage monitoring and insights
+  - Character usage breakdowns by voice, model, user, and source
+  - Time-based aggregation (hour, day, week, month, cumulative)
+  - Trend analysis and forecasting capabilities
+  - Cost estimation and optimization recommendations
+
+- **🎤 Voice Discovery** - Powerful voice library management
+  - Advanced filtering by category, gender, age, accent, language, and use case
+  - Voice recommendation engine based on requirements
+  - Bulk voice addition and collection curation tools
+  - Voice analytics and popularity tracking
+
+- **👤 Account Management** - Comprehensive user account oversight
+  - Real-time subscription monitoring and health checks
+  - Usage limit tracking with projections and alerts
+  - Feature availability matrix and upgrade recommendations
+  - Security and moderation status monitoring
+
 ### Changed
 - **🔄 Code Organization** - Moved TextToDialogue class to its own file
   - Extracted `TextToDialogue` class from `text_to_speech.rb` to `text_to_dialogue.rb`
@@ -14,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All tests and functionality remain unchanged
   - Added Speech-to-Text delete transcript endpoint (`delete_transcript`)
 
-## [0.5.1] - 2025-09-15
+## [0.5.1] - 2024-09-15
 
 ### Removed
 - **🧹 Dependency Optimization** - Removed unnecessary development dependencies
