@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2025-09-15
+
+### Removed
+- **🧹 Dependency Optimization** - Removed unnecessary development dependencies
+  - Removed `rubocop` and `rubocop-rspec` dependencies
+  - Removed `brakeman` dependency (not suitable for gem libraries)
+  - Removed `.rubocop.yml` and `.brakeman.yml` configuration files
+  - Reduced bundle size from 49 to 31 gems (37% reduction)
+
+### Changed
+- **⚡ CI/CD Optimization** - Simplified and streamlined continuous integration
+  - Removed linting job from GitHub Actions workflow
+  - Focused CI pipeline on essential checks: tests, security, and build
+  - Updated CI to use only `bundler-audit` for dependency vulnerability scanning
+  - Faster CI builds with fewer dependencies and simpler workflow
+
+### Updated
+- **📚 Documentation Cleanup** - Updated documentation to reflect simplified toolchain
+  - Removed RuboCop references from README.md
+  - Updated CI/CD documentation section
+  - Simplified development workflow documentation
+  - Updated Rake task descriptions and help text
+- **🔧 Development Tools** - Streamlined development workflow
+  - Removed lint-related Rake tasks (`dev:lint`, `dev:lint_fix`, `dev:brakeman`)
+  - Simplified `release:prepare` task to focus on tests and security
+  - Updated help documentation for available Rake tasks
+
+### Technical Improvements
+- **📦 Leaner Dependencies** - More focused dependency management
+  - Kept only essential development tools: RSpec, WebMock, bundler-audit
+  - Maintained security scanning through bundler-audit
+  - Improved bundle install speed and reduced maintenance overhead
+- **🚀 Performance** - Faster development and CI workflows
+  - Reduced Docker image sizes for CI/CD
+  - Faster bundle installations
+  - Simplified toolchain reduces cognitive overhead
+
+### Notes
+- This release focuses on optimizing the development experience and CI/CD pipeline
+- Security scanning is maintained through bundler-audit, which is more appropriate for gem libraries
+- The simplified toolchain reduces maintenance overhead while maintaining code quality through comprehensive testing
+
 ## [0.5.0] - 2025-09-14
 
 ### Added

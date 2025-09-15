@@ -330,9 +330,7 @@ rake spec                    # Run all tests (default)
 rake test:unit              # Run unit tests only
 rake test:integration       # Run integration tests only
 
-# Code Quality
-rake dev:lint               # Run RuboCop linter
-rake dev:lint_fix           # Auto-fix RuboCop issues
+# Security
 rake dev:security           # Run security checks
 rake dev:audit              # Run bundler-audit
 
@@ -348,7 +346,6 @@ This gem uses GitHub Actions for CI/CD with the following checks:
 
 - **Tests**: Runs on Ruby 3.0, 3.1, 3.2, and 3.3
 - **Security**: bundler-audit for dependency vulnerability scanning
-- **Code Quality**: RuboCop linting with gem-specific rules
 - **Build**: Verifies gem can be built and installed
 
 All checks must pass before merging pull requests.
@@ -363,7 +360,7 @@ To release a new version:
 
 1. Update the version number in `version.rb`
 2. Update `CHANGELOG.md`
-3. Run `bundle exec rake release:prepare` to verify everything passes
+3. Run `bundle exec rake release:prepare` to verify tests and security checks pass
 4. Run `bundle exec rake release`
 
 ## Testing

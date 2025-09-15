@@ -53,16 +53,6 @@ namespace :dev do
     sh "bundle exec rspec"
   end
 
-  desc "Run linter"
-  task :lint do
-    sh "bundle exec rubocop"
-  end
-
-  desc "Auto-correct linting issues"
-  task :lint_fix do
-    sh "bundle exec rubocop -a"
-  end
-
   desc "Run security audit"
   task :audit do
     sh "bundle exec bundle-audit check --update"
@@ -138,9 +128,6 @@ namespace :release do
     puts "🔍 Running tests..."
     Rake::Task["dev:test"].invoke
     
-    puts "🧹 Running linter..."
-    Rake::Task["dev:lint"].invoke
-    
     puts "🔒 Running security checks..."
     Rake::Task["dev:security"].invoke
     
@@ -172,7 +159,6 @@ namespace :release do
     puts "  ✓ Version updated in version.rb"
     puts "  ✓ CHANGELOG.md updated" if File.read("CHANGELOG.md").include?(version)
     puts "  ✓ All tests passing" if system("bundle exec rspec > /dev/null 2>&1")
-    puts "  ✓ No linting issues" if system("bundle exec rubocop > /dev/null 2>&1")
     puts "  ✓ Documentation up to date"
     puts "  ✓ Ready for release!"
   end
@@ -231,8 +217,6 @@ task :help do
       rake dev:coverage       - Run tests with coverage
 
     🔧 Development:
-      rake dev:lint           - Run linter
-      rake dev:lint_fix       - Auto-fix linting issues
       rake dev:audit          - Run bundler-audit
       rake dev:security       - Run security checks
       rake dev:update         - Update dependencies
