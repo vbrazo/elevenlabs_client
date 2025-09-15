@@ -18,8 +18,12 @@ A comprehensive Ruby client library for the ElevenLabs API, supporting voice syn
 🔇 **Audio Isolation** - Remove background noise from audio files  
 📱 **Audio Native** - Create embeddable audio players for websites  
 ⏱️ **Forced Alignment** - Get precise timing information for audio transcripts  
-📊 **Admin History** - Manage and analyze your generated audio history  
-🤖 **Models** - List available models and their capabilities  
+📊 **Admin APIs** - Complete administrative functionality:
+  - **History** - Manage and analyze your generated audio history
+  - **Usage** - Monitor character usage and analytics  
+  - **User** - Access account information and subscription details
+  - **Voice Library** - Browse and manage community shared voices
+  - **Models** - List available models and their capabilities  
 📡 **Streaming** - Real-time audio streaming  
 ⚙️ **Configurable** - Flexible configuration options  
 🧪 **Well-tested** - Comprehensive test coverage  
@@ -145,20 +149,26 @@ File.open("sample1.mp3", "rb") do |sample|
   puts "Created voice: #{voice['voice_id']}"
 end
 
-# Admin History Management
+# Admin APIs - Account Management
+user_info = client.user.get_user
+puts "Account: #{user_info['subscription']['tier']} (#{user_info['subscription']['status']})"
+puts "Usage: #{user_info['subscription']['character_count']} / #{user_info['subscription']['character_limit']}"
+
+# Usage Analytics
+usage_stats = client.usage.get_character_stats(
+  start_unix: (Time.now - 7.days).to_i * 1000,
+  end_unix: Time.now.to_i * 1000,
+  breakdown_type: "voice"
+)
+puts "7-day usage: #{usage_stats['usage']['All'].sum} characters"
+
+# History Management
 history = client.history.list(page_size: 10)
 puts "Recent history: #{history['history'].length} items"
 
-# Get specific history item
-if history['history'].any?
-  item_id = history['history'].first['history_item_id']
-  item_details = client.history.get(item_id)
-  puts "Item details: #{item_details['text']}"
-  
-  # Download the audio
-  audio_data = client.history.get_audio(item_id)
-  File.open("history_audio.mp3", "wb") { |f| f.write(audio_data) }
-end
+# Voice Library
+voices = client.voice_library.get_shared_voices(category: "professional", page_size: 5)
+puts "Professional voices available: #{voices['voices'].length}"
 
 # Music Generation
 music_data = client.music.compose(
@@ -251,8 +261,12 @@ end
 - **[Audio Isolation API](docs/AUDIO_ISOLATION.md)** - Remove background noise from audio
 - **[Audio Native API](docs/AUDIO_NATIVE.md)** - Create embeddable audio players
 - **[Forced Alignment API](docs/FORCED_ALIGNMENT.md)** - Get precise timing information
-- **[Admin History API](docs/ADMIN_HISTORY.md)** - Manage and analyze generated audio history
-- **[Models API](docs/MODELS.md)** - List available models and capabilities
+- **[Admin APIs](docs/admin/README.md)** - Complete administrative functionality:
+  - **[User Management](docs/admin/USER.md)** - Account information and subscription details
+  - **[Usage Analytics](docs/admin/USAGE.md)** - Character usage monitoring and analytics
+  - **[History Management](docs/admin/HISTORY.md)** - Generated audio history management
+  - **[Voice Library](docs/admin/VOICE_LIBRARY.md)** - Community voice browsing and management
+  - **[Models API](docs/admin/MODELS.md)** - List available models and capabilities
 
 ### Available Endpoints
 
@@ -271,8 +285,11 @@ end
 | `client.audio_isolation.*` | Background noise removal | [AUDIO_ISOLATION.md](docs/AUDIO_ISOLATION.md) |
 | `client.audio_native.*` | Embeddable audio players | [AUDIO_NATIVE.md](docs/AUDIO_NATIVE.md) |
 | `client.forced_alignment.*` | Audio-text timing alignment | [FORCED_ALIGNMENT.md](docs/FORCED_ALIGNMENT.md) |
-| `client.history.*` | Generated audio history management | [ADMIN_HISTORY.md](docs/ADMIN_HISTORY.md) |
-| `client.models.*` | Model information and capabilities | [MODELS.md](docs/MODELS.md) |
+| `client.user.*` | User account and subscription information | [USER.md](docs/admin/USER.md) |
+| `client.usage.*` | Character usage analytics and monitoring | [USAGE.md](docs/admin/USAGE.md) |
+| `client.history.*` | Generated audio history management | [HISTORY.md](docs/admin/HISTORY.md) |
+| `client.voice_library.*` | Community voice browsing and management | [VOICE_LIBRARY.md](docs/admin/VOICE_LIBRARY.md) |
+| `client.models.*` | Model information and capabilities | [MODELS.md](docs/admin/MODELS.md) |
 
 ## Configuration Options
 
@@ -341,7 +358,12 @@ The gem is designed to work seamlessly with Rails applications. See the [example
 - [AudioIsolationController](examples/audio_isolation_controller.rb) - Background noise removal and audio cleanup
 - [AudioNativeController](examples/audio_native_controller.rb) - Embeddable audio players for websites
 - [ForcedAlignmentController](examples/forced_alignment_controller.rb) - Audio-text timing alignment and subtitle generation
-- [Admin::HistoryController](examples/admin/history_controller.rb) - Generated audio history management and analytics
+- **Admin Controllers** - Complete administrative functionality:
+  - [Admin::HistoryController](examples/admin/history_controller.rb) - Generated audio history management and analytics
+  - [Admin::UsageController](examples/admin/usage_controller.rb) - Character usage monitoring and analytics
+  - [Admin::UserController](examples/admin/user_controller.rb) - User account and subscription management
+  - [Admin::VoiceLibraryController](examples/admin/voice_library_controller.rb) - Community voice browsing and management
+  - [Admin::ModelsController](examples/admin/models_controller.rb) - Model information and selection guidance
 
 ## Development
 
