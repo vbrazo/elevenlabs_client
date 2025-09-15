@@ -142,6 +142,35 @@ end
 
 ---
 
+### 🔗 [Webhooks Management](WEBHOOKS.md)
+Monitor and manage workspace webhooks with comprehensive health and security analysis.
+
+```ruby
+# Get all webhooks with usage information
+result = client.webhooks.list_webhooks(include_usages: true)
+
+result["webhooks"].each do |webhook|
+  status = webhook["is_auto_disabled"] ? "Auto-disabled" : 
+           webhook["is_disabled"] ? "Disabled" : "Active"
+  
+  puts "#{webhook['name']}: #{status}"
+  puts "  URL: #{webhook['webhook_url']}"
+  puts "  Auth: #{webhook['auth_type']}"
+  
+  if webhook["most_recent_failure_error_code"]
+    puts "  Recent failure: HTTP #{webhook['most_recent_failure_error_code']}"
+  end
+end
+```
+
+**Key Features:**
+- List all workspace webhooks and their status
+- Monitor webhook health and failure history
+- Security auditing for authentication and HTTPS
+- Usage tracking across different services
+
+---
+
 ## Quick Start Guide
 
 ### Installation and Setup

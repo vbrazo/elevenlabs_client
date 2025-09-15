@@ -22,7 +22,7 @@ module ElevenlabsClient
       # @return [Hash] Response containing history items, pagination info
       def list(**options)
         endpoint = "/v1/history"
-        
+
         # Build query parameters
         query_params = {}
         query_params[:page_size] = options[:page_size] if options[:page_size]

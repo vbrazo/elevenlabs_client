@@ -1,11 +1,47 @@
 # frozen_string_literal: true
 
 RSpec.describe "Admin::ServiceAccounts Integration", :integration do
-  let(:client) { ElevenlabsClient::Client.new }
+  let(:api_key) { "test_api_key" }
+  let(:client) { ElevenlabsClient::Client.new(api_key: api_key) }
   let(:service_accounts) { client.service_accounts }
 
+  let(:service_accounts_response) do
+    {
+      "service-accounts" => [
+        {
+          "service_account_user_id" => "sa_123abc",
+          "name" => "Test Service Account",
+          "api-keys" => [
+            {
+              "name" => "Production API Key",
+              "hint" => "sk_abc...xyz",
+              "key_id" => "key_123",
+              "service_account_user_id" => "sa_123abc",
+              "created_at_unix" => 1609459200,
+              "is_disabled" => false,
+              "permissions" => ["text_to_speech", "speech_to_text"],
+              "character_limit" => 50000,
+              "character_count" => 12500
+            }
+          ],
+          "created_at_unix" => 1609459200
+        }
+      ]
+    }
+  end
+
   describe "#get_service_accounts" do
-    context "when retrieving service accounts", :vcr do
+    context "when retrieving service accounts" do
+      before do
+        stub_request(:get, "https://api.elevenlabs.io/v1/service-accounts")
+          .with(headers: { "xi-api-key" => api_key })
+          .to_return(
+            status: 200,
+            body: service_accounts_response.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+      end
+
       it "successfully retrieves service accounts" do
         result = service_accounts.get_service_accounts
         
@@ -50,7 +86,7 @@ RSpec.describe "Admin::ServiceAccounts Integration", :integration do
             expect(api_key["key_id"]).to be_a(String)
             expect(api_key["service_account_user_id"]).to be_a(String)
             expect(api_key["created_at_unix"]).to be_a(Integer)
-            expect(api_key["is_disabled"]).to be_in([true, false])
+            expect([true, false]).to include(api_key["is_disabled"])
             expect(api_key["permissions"]).to be_an(Array)
             expect(api_key["character_limit"]).to be_a(Integer)
             expect(api_key["character_count"]).to be_a(Integer)
@@ -59,9 +95,19 @@ RSpec.describe "Admin::ServiceAccounts Integration", :integration do
       end
     end
 
-    context "when authentication fails", :vcr do
+    context "when authentication fails" do
       let(:client_with_invalid_key) { ElevenlabsClient::Client.new(api_key: "invalid_key") }
       let(:service_accounts_with_invalid_key) { client_with_invalid_key.service_accounts }
+
+      before do
+        stub_request(:get, "https://api.elevenlabs.io/v1/service-accounts")
+          .with(headers: { "xi-api-key" => "invalid_key" })
+          .to_return(
+            status: 401,
+            body: { detail: "Unauthorized" }.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+      end
 
       it "raises an AuthenticationError" do
         expect {
@@ -72,7 +118,17 @@ RSpec.describe "Admin::ServiceAccounts Integration", :integration do
   end
 
   describe "aliases" do
-    context "when using list alias", :vcr do
+    before do
+      stub_request(:get, "https://api.elevenlabs.io/v1/service-accounts")
+        .with(headers: { "xi-api-key" => api_key })
+        .to_return(
+          status: 200,
+          body: service_accounts_response.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+    end
+
+    context "when using list alias" do
       it "successfully retrieves service accounts" do
         result = service_accounts.list
         
@@ -82,7 +138,7 @@ RSpec.describe "Admin::ServiceAccounts Integration", :integration do
       end
     end
 
-    context "when using all alias", :vcr do
+    context "when using all alias" do
       it "successfully retrieves service accounts" do
         result = service_accounts.all
         
@@ -92,7 +148,7 @@ RSpec.describe "Admin::ServiceAccounts Integration", :integration do
       end
     end
 
-    context "when using service_accounts alias", :vcr do
+    context "when using service_accounts alias" do
       it "successfully retrieves service accounts" do
         result = service_accounts.service_accounts
         
@@ -104,7 +160,17 @@ RSpec.describe "Admin::ServiceAccounts Integration", :integration do
   end
 
   describe "response structure validation" do
-    context "when service accounts exist", :vcr do
+    context "when service accounts exist" do
+      before do
+        stub_request(:get, "https://api.elevenlabs.io/v1/service-accounts")
+          .with(headers: { "xi-api-key" => api_key })
+          .to_return(
+            status: 200,
+            body: service_accounts_response.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+      end
+
       it "validates complete response structure" do
         result = service_accounts.get_service_accounts
         
@@ -151,7 +217,7 @@ RSpec.describe "Admin::ServiceAccounts Integration", :integration do
             expect(api_key["key_id"]).to be_a(String)
             expect(api_key["service_account_user_id"]).to be_a(String)
             expect(api_key["created_at_unix"]).to be_a(Integer)
-            expect(api_key["is_disabled"]).to be_in([true, false])
+            expect([true, false]).to include(api_key["is_disabled"])
             expect(api_key["permissions"]).to be_an(Array)
             expect(api_key["character_limit"]).to be_a(Integer)
             expect(api_key["character_count"]).to be_a(Integer)
@@ -172,7 +238,17 @@ RSpec.describe "Admin::ServiceAccounts Integration", :integration do
   end
 
   describe "error handling" do
-    context "when there are no service accounts", :vcr do
+    context "when there are no service accounts" do
+      before do
+        stub_request(:get, "https://api.elevenlabs.io/v1/service-accounts")
+          .with(headers: { "xi-api-key" => api_key })
+          .to_return(
+            status: 200,
+            body: { "service-accounts" => [] }.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+      end
+
       it "returns empty array without errors" do
         result = service_accounts.get_service_accounts
         

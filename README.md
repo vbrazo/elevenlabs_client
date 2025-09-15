@@ -25,7 +25,8 @@ A comprehensive Ruby client library for the ElevenLabs API, supporting voice syn
   - **Voice Library** - Browse and manage community shared voices
   - **Models** - List available models and their capabilities
   - **Samples** - Delete voice samples for content moderation
-  - **Service Accounts** - Monitor service accounts and API keys  
+  - **Service Accounts** - Monitor service accounts and API keys
+  - **Webhooks** - Monitor workspace webhooks and their health  
 📡 **Streaming** - Real-time audio streaming  
 ⚙️ **Configurable** - Flexible configuration options  
 🧪 **Well-tested** - Comprehensive test coverage  
@@ -271,6 +272,7 @@ end
   - **[Models API](docs/admin/MODELS.md)** - List available models and capabilities
   - **[Samples Management](docs/admin/SAMPLES.md)** - Delete voice samples for content moderation
   - **[Service Accounts](docs/admin/SERVICE_ACCOUNTS.md)** - Monitor service accounts and API keys
+  - **[Webhooks Management](docs/admin/WEBHOOKS.md)** - Monitor workspace webhooks and their health
 
 ### Available Endpoints
 
