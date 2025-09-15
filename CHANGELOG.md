@@ -7,6 +7,82 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2024-09-15
+
+### Added
+- **🗑️ Admin Samples Management** - Voice sample deletion and content moderation
+  - **Sample Deletion** (`client.samples.*`) - Delete voice samples by ID for content moderation and cleanup
+  - Comprehensive error handling for voice and sample validation
+  - Security-focused operations with proper authentication and authorization
+  - Method aliases: `delete_voice_sample`, `remove_sample`
+
+- **🏢 Admin Service Accounts** - Complete service account monitoring and management
+  - **Account Monitoring** (`client.service_accounts.*`) - List all service accounts in workspace
+  - **API Key Analytics** - Monitor API key status, permissions, and usage across all accounts
+  - **Usage Tracking** - Character usage monitoring with limits and projections
+  - **Security Auditing** - Comprehensive security analysis and compliance reporting
+  - Method aliases: `list`, `all`, `service_accounts`
+
+- **🔗 Admin Webhooks Management** - Workspace webhook monitoring and health analysis
+  - **Webhook Monitoring** (`client.webhooks.*`) - List all workspace webhooks with detailed status
+  - **Health Analysis** - Monitor webhook failures, auto-disabled status, and recent error codes
+  - **Security Auditing** - Authentication method analysis and HTTPS compliance checking
+  - **Usage Analytics** - Track webhook usage across different services and features
+  - Method aliases: `get_webhooks`, `all`, `webhooks`
+
+### Enhanced
+- **📚 Documentation Expansion** - Comprehensive documentation for new admin endpoints
+  - Added `docs/admin/SAMPLES.md` - Voice sample management and content moderation guide (883 lines)
+  - Added `docs/admin/SERVICE_ACCOUNTS.md` - Service account monitoring and security analysis guide (1,264 lines)
+  - Added `docs/admin/WEBHOOKS.md` - Webhook management and health monitoring guide (1,264 lines)
+  - Updated `docs/admin/README.md` - Enhanced admin overview with all endpoints (548 lines)
+  - Updated main README.md with new admin endpoint documentation
+  - Total: 3,959 lines of additional admin documentation
+
+- **🎯 Example Controllers** - Production-ready Rails integration examples for new endpoints
+  - Added `examples/admin/samples_controller.rb` - Sample deletion with content moderation workflows (767 lines)
+  - Added `examples/admin/service_accounts_controller.rb` - Account monitoring with analytics dashboard (500+ lines)
+  - Added `examples/admin/webhooks_controller.rb` - Webhook health monitoring with export capabilities (761 lines)
+  - All controllers include comprehensive error handling, filtering, and export functionality
+
+### Improved
+- **🧪 Test Coverage** - Comprehensive testing for all new admin endpoints
+  - Added 35 new endpoint tests covering samples, service accounts, and webhooks
+  - Added 31 new integration tests with proper WebMock stubbing and response validation
+  - Enhanced error handling tests for all new admin scenarios
+  - Total: 66 new tests, bringing total to 874 examples with 100% pass rate
+
+- **🔧 Client Integration** - Seamless integration of new admin endpoints
+  - Updated `Client` class to expose new admin endpoints (`samples`, `service_accounts`, `webhooks`)
+  - Enhanced error handling for admin-specific scenarios across all endpoints
+  - Consistent API patterns and response structures
+  - Proper namespacing under `ElevenlabsClient::Admin` module
+
+### Technical Improvements
+- **🔒 Security Management** - Advanced security monitoring and compliance
+  - Voice sample content moderation with audit trails
+  - Service account permission analysis and excessive privilege detection
+  - Webhook security auditing with HTTPS and authentication validation
+  - Comprehensive security reporting and recommendation systems
+
+- **📊 Health Monitoring** - Sophisticated health analysis across admin resources
+  - Webhook failure tracking with error code analysis and auto-disable detection
+  - Service account usage monitoring with character limit projections
+  - Sample deletion tracking for content moderation compliance
+  - Real-time health status reporting with actionable insights
+
+- **🛡️ Content Moderation** - Professional content management capabilities
+  - Secure sample deletion with proper authentication and logging
+  - Batch sample operations for efficient content cleanup
+  - Audit trail support for compliance and tracking
+  - Integration with content moderation workflows and policies
+
+- **📈 Analytics & Reporting** - Advanced analytics across all admin functions
+  - Service account usage analytics with trend analysis
+  - Webhook performance monitoring with failure rate calculations
+  - Sample deletion analytics for content moderation reporting
+  - Exportable reports in CSV, JSON, and Excel formats
+
 ## [0.6.0] - 2024-09-15
 
 ### Added

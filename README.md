@@ -173,6 +173,18 @@ puts "Recent history: #{history['history'].length} items"
 voices = client.voice_library.get_shared_voices(category: "professional", page_size: 5)
 puts "Professional voices available: #{voices['voices'].length}"
 
+# Admin Samples Management
+client.samples.delete_sample(voice_id: "voice_id", sample_id: "sample_id")
+puts "Sample deleted successfully"
+
+# Service Accounts Monitoring
+accounts = client.service_accounts.get_service_accounts
+puts "Service accounts: #{accounts['service-accounts'].length}"
+
+# Webhooks Management
+webhooks = client.webhooks.list_webhooks(include_usages: true)
+puts "Active webhooks: #{webhooks['webhooks'].length}"
+
 # Music Generation
 music_data = client.music.compose(
   prompt: "Upbeat electronic dance track with synthesizers",
@@ -296,6 +308,9 @@ end
 | `client.history.*` | Generated audio history management | [HISTORY.md](docs/admin/HISTORY.md) |
 | `client.voice_library.*` | Community voice browsing and management | [VOICE_LIBRARY.md](docs/admin/VOICE_LIBRARY.md) |
 | `client.models.*` | Model information and capabilities | [MODELS.md](docs/admin/MODELS.md) |
+| `client.samples.*` | Voice sample deletion and content moderation | [SAMPLES.md](docs/admin/SAMPLES.md) |
+| `client.service_accounts.*` | Service account monitoring and management | [SERVICE_ACCOUNTS.md](docs/admin/SERVICE_ACCOUNTS.md) |
+| `client.webhooks.*` | Workspace webhook monitoring and health analysis | [WEBHOOKS.md](docs/admin/WEBHOOKS.md) |
 
 ## Configuration Options
 
@@ -370,6 +385,9 @@ The gem is designed to work seamlessly with Rails applications. See the [example
   - [Admin::UserController](examples/admin/user_controller.rb) - User account and subscription management
   - [Admin::VoiceLibraryController](examples/admin/voice_library_controller.rb) - Community voice browsing and management
   - [Admin::ModelsController](examples/admin/models_controller.rb) - Model information and selection guidance
+  - [Admin::SamplesController](examples/admin/samples_controller.rb) - Voice sample deletion and content moderation
+  - [Admin::ServiceAccountsController](examples/admin/service_accounts_controller.rb) - Service account monitoring and analytics
+  - [Admin::WebhooksController](examples/admin/webhooks_controller.rb) - Workspace webhook monitoring and health analysis
 
 ## Development
 
