@@ -95,6 +95,27 @@ result = client.voice_library.add_shared_voice(
 
 ---
 
+### 🗑️ [Samples Management](SAMPLES.md)
+Delete voice samples for content moderation and voice library management.
+
+```ruby
+# Delete a voice sample
+result = client.samples.delete_sample(
+  voice_id: "21m00Tcm4TlvDq8ikWAM",
+  sample_id: "sample_123abc"
+)
+
+puts "Deletion status: #{result['status']}" # => "ok"
+```
+
+**Key Features:**
+- Delete specific voice samples by ID
+- Content moderation and cleanup capabilities
+- Secure sample removal operations
+- Comprehensive error handling and logging
+
+---
+
 ## Quick Start Guide
 
 ### Installation and Setup
