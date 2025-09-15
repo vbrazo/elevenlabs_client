@@ -18,6 +18,7 @@ A comprehensive Ruby client library for the ElevenLabs API, supporting voice syn
 🔇 **Audio Isolation** - Remove background noise from audio files  
 📱 **Audio Native** - Create embeddable audio players for websites  
 ⏱️ **Forced Alignment** - Get precise timing information for audio transcripts  
+📊 **Admin History** - Manage and analyze your generated audio history  
 🤖 **Models** - List available models and their capabilities  
 📡 **Streaming** - Real-time audio streaming  
 ⚙️ **Configurable** - Flexible configuration options  
@@ -144,6 +145,21 @@ File.open("sample1.mp3", "rb") do |sample|
   puts "Created voice: #{voice['voice_id']}"
 end
 
+# Admin History Management
+history = client.history.list(page_size: 10)
+puts "Recent history: #{history['history'].length} items"
+
+# Get specific history item
+if history['history'].any?
+  item_id = history['history'].first['history_item_id']
+  item_details = client.history.get(item_id)
+  puts "Item details: #{item_details['text']}"
+  
+  # Download the audio
+  audio_data = client.history.get_audio(item_id)
+  File.open("history_audio.mp3", "wb") { |f| f.write(audio_data) }
+end
+
 # Music Generation
 music_data = client.music.compose(
   prompt: "Upbeat electronic dance track with synthesizers",
@@ -235,6 +251,7 @@ end
 - **[Audio Isolation API](docs/AUDIO_ISOLATION.md)** - Remove background noise from audio
 - **[Audio Native API](docs/AUDIO_NATIVE.md)** - Create embeddable audio players
 - **[Forced Alignment API](docs/FORCED_ALIGNMENT.md)** - Get precise timing information
+- **[Admin History API](docs/ADMIN_HISTORY.md)** - Manage and analyze generated audio history
 - **[Models API](docs/MODELS.md)** - List available models and capabilities
 
 ### Available Endpoints
@@ -254,6 +271,7 @@ end
 | `client.audio_isolation.*` | Background noise removal | [AUDIO_ISOLATION.md](docs/AUDIO_ISOLATION.md) |
 | `client.audio_native.*` | Embeddable audio players | [AUDIO_NATIVE.md](docs/AUDIO_NATIVE.md) |
 | `client.forced_alignment.*` | Audio-text timing alignment | [FORCED_ALIGNMENT.md](docs/FORCED_ALIGNMENT.md) |
+| `client.history.*` | Generated audio history management | [ADMIN_HISTORY.md](docs/ADMIN_HISTORY.md) |
 | `client.models.*` | Model information and capabilities | [MODELS.md](docs/MODELS.md) |
 
 ## Configuration Options
@@ -323,6 +341,7 @@ The gem is designed to work seamlessly with Rails applications. See the [example
 - [AudioIsolationController](examples/audio_isolation_controller.rb) - Background noise removal and audio cleanup
 - [AudioNativeController](examples/audio_native_controller.rb) - Embeddable audio players for websites
 - [ForcedAlignmentController](examples/forced_alignment_controller.rb) - Audio-text timing alignment and subtitle generation
+- [Admin::HistoryController](examples/admin/history_controller.rb) - Generated audio history management and analytics
 
 ## Development
 
