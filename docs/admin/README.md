@@ -116,6 +116,32 @@ puts "Deletion status: #{result['status']}" # => "ok"
 
 ---
 
+### 🏢 [Service Accounts Management](SERVICE_ACCOUNTS.md)
+Retrieve and monitor all service accounts and their API keys in your workspace.
+
+```ruby
+# Get all service accounts
+result = client.service_accounts.get_service_accounts
+
+result["service-accounts"].each do |account|
+  puts "Account: #{account['name']} (#{account['api-keys'].length} API keys)"
+  
+  account["api-keys"].each do |api_key|
+    status = api_key["is_disabled"] ? "Disabled" : "Active"
+    usage = "#{api_key['character_count']}/#{api_key['character_limit']}"
+    puts "  #{api_key['name']}: #{status} - Usage: #{usage}"
+  end
+end
+```
+
+**Key Features:**
+- List all service accounts in workspace
+- Monitor API key status and permissions
+- Track character usage across all keys
+- Security auditing and compliance reporting
+
+---
+
 ## Quick Start Guide
 
 ### Installation and Setup
