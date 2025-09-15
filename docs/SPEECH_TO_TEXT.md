@@ -72,6 +72,18 @@ transcript['words'].each do |word|
 end
 ```
 
+### Deleting Transcripts
+
+```ruby
+# Delete a transcript to free up storage
+result = client.speech_to_text.delete_transcript("transcription_id_123")
+puts result["message"]  # "Delete completed successfully."
+
+# Using alias methods
+client.speech_to_text.delete_transcription("transcription_id_456")
+client.speech_to_text.remove_transcript("transcription_id_789")
+```
+
 ## Methods
 
 ### `create(model_id, **options)`
@@ -113,6 +125,21 @@ Retrieves a previously generated transcript by its ID.
 - **transcription_id** (String, required): The unique ID of the transcript
 
 **Returns:** Hash with detailed transcript data
+
+### `delete_transcript(transcription_id)`
+
+Deletes a previously generated transcript by its ID.
+
+**Parameters:**
+- **transcription_id** (String, required): The unique ID of the transcript to delete
+
+**Returns:** Hash with delete confirmation response
+
+```ruby
+# Delete a transcript
+result = client.speech_to_text.delete_transcript("transcription_id_123")
+puts result["message"]  # "Delete completed successfully."
+```
 
 ## Models
 
@@ -591,6 +618,10 @@ client.speech_to_text.transcribe(model_id, **options)
 # Aliases for get_transcript
 client.speech_to_text.get_transcription(transcription_id)
 client.speech_to_text.retrieve_transcript(transcription_id)
+
+# Aliases for delete_transcript
+client.speech_to_text.delete_transcription(transcription_id)
+client.speech_to_text.remove_transcript(transcription_id)
 ```
 
 ## File Requirements

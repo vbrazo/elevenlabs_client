@@ -167,6 +167,12 @@ File.open("audio.mp3", "rb") do |audio_file|
     timestamps_granularity: "word"
   )
   puts "Transcribed: #{transcription['text']}"
+  
+  # Get the transcript later
+  transcript = client.speech_to_text.get_transcript(transcription['transcription_id'])
+  
+  # Delete when no longer needed
+  client.speech_to_text.delete_transcript(transcription['transcription_id'])
 end
 
 # Audio Isolation (Background Noise Removal)

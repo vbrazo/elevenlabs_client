@@ -192,6 +192,58 @@ RSpec.describe "ElevenlabsClient Speech-to-Text Integration" do
     end
   end
 
+  describe "transcript deletion functionality" do
+    let(:delete_response) do
+      {
+        "message" => "Delete completed successfully."
+      }
+    end
+
+    before do
+      stub_request(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+        .to_return(
+          status: 200,
+          body: delete_response.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+    end
+
+    it "deletes transcript through client interface" do
+      result = client.speech_to_text.delete_transcript(transcription_id)
+
+      expect(result).to eq(delete_response)
+      expect(WebMock).to have_requested(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+        .with(
+          headers: { "xi-api-key" => api_key }
+        )
+    end
+
+    it "supports the delete_transcription alias method" do
+      result = client.speech_to_text.delete_transcription(transcription_id)
+
+      expect(result).to eq(delete_response)
+    end
+
+    it "supports the remove_transcript alias method" do
+      result = client.speech_to_text.remove_transcript(transcription_id)
+
+      expect(result).to eq(delete_response)
+    end
+
+    context "when transcript does not exist" do
+      before do
+        stub_request(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/nonexistent_id")
+          .to_return(status: 404, body: "Transcript not found")
+      end
+
+      it "raises NotFoundError" do
+        expect {
+          client.speech_to_text.delete_transcript("nonexistent_id")
+        }.to raise_error(ElevenlabsClient::NotFoundError)
+      end
+    end
+  end
+
   describe "webhook functionality" do
     let(:webhook_response) do
       {

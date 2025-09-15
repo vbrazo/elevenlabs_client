@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **🔄 Code Organization** - Moved TextToDialogue class to its own file
+  - Extracted `TextToDialogue` class from `text_to_speech.rb` to `text_to_dialogue.rb`
+  - Improved code organization and modularity
+  - All tests and functionality remain unchanged
+  - Added Speech-to-Text delete transcript endpoint (`delete_transcript`)
+
 ## [0.5.1] - 2025-09-15
 
 ### Removed

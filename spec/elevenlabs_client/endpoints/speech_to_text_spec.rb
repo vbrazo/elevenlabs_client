@@ -512,6 +512,95 @@ RSpec.describe ElevenlabsClient::SpeechToText do
     end
   end
 
+  describe "#delete_transcript" do
+    let(:delete_response) do
+      {
+        "message" => "Delete completed successfully."
+      }
+    end
+
+    before do
+      stub_request(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+        .to_return(
+          status: 200,
+          body: delete_response.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+    end
+
+    context "with valid transcription_id" do
+      it "deletes transcript successfully" do
+        result = speech_to_text.delete_transcript(transcription_id)
+
+        expect(result).to eq(delete_response)
+      end
+
+      it "sends the correct DELETE request" do
+        speech_to_text.delete_transcript(transcription_id)
+
+        expect(WebMock).to have_requested(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+          .with(
+            headers: {
+              "xi-api-key" => api_key
+            }
+          )
+      end
+    end
+
+    context "when API returns an error" do
+      context "with not found error" do
+        before do
+          stub_request(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+            .to_return(status: 404, body: "Transcript not found")
+        end
+
+        it "raises NotFoundError" do
+          expect {
+            speech_to_text.delete_transcript(transcription_id)
+          }.to raise_error(ElevenlabsClient::NotFoundError)
+        end
+      end
+
+      context "with unprocessable entity error" do
+        before do
+          stub_request(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+            .to_return(
+              status: 422,
+              body: {
+                detail: [
+                  {
+                    loc: ["transcription_id"],
+                    msg: "Invalid transcription ID format",
+                    type: "value_error"
+                  }
+                ]
+              }.to_json,
+              headers: { "Content-Type" => "application/json" }
+            )
+        end
+
+        it "raises UnprocessableEntityError" do
+          expect {
+            speech_to_text.delete_transcript(transcription_id)
+          }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
+        end
+      end
+
+      context "with authentication error" do
+        before do
+          stub_request(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+            .to_return(status: 401, body: "Unauthorized")
+        end
+
+        it "raises AuthenticationError" do
+          expect {
+            speech_to_text.delete_transcript(transcription_id)
+          }.to raise_error(ElevenlabsClient::AuthenticationError)
+        end
+      end
+    end
+  end
+
   describe "alias methods" do
     let(:transcription_response) do
       {
@@ -540,6 +629,12 @@ RSpec.describe ElevenlabsClient::SpeechToText do
           body: transcript_response.to_json,
           headers: { "Content-Type" => "application/json" }
         )
+      stub_request(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+        .to_return(
+          status: 200,
+          body: { message: "Delete completed successfully." }.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
     end
 
     describe "#transcribe" do
@@ -566,6 +661,24 @@ RSpec.describe ElevenlabsClient::SpeechToText do
 
         expect(result).to eq(transcript_response)
         expect(WebMock).to have_requested(:get, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+      end
+    end
+
+    describe "#delete_transcription" do
+      it "is an alias for delete_transcript method" do
+        result = speech_to_text.delete_transcription(transcription_id)
+
+        expect(result).to eq({ "message" => "Delete completed successfully." })
+        expect(WebMock).to have_requested(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
+      end
+    end
+
+    describe "#remove_transcript" do
+      it "is an alias for delete_transcript method" do
+        result = speech_to_text.remove_transcript(transcription_id)
+
+        expect(result).to eq({ "message" => "Delete completed successfully." })
+        expect(WebMock).to have_requested(:delete, "https://api.elevenlabs.io/v1/speech-to-text/transcripts/#{transcription_id}")
       end
     end
   end

@@ -110,29 +110,6 @@ module ElevenlabsClient
       @client.delete(endpoint)
     end
 
-    # Check if a voice is banned (safety control)
-    # @param voice_id [String] The ID of the voice to check
-    # @return [Boolean] True if the voice is banned
-    def banned?(voice_id)
-      voice = get(voice_id)
-      voice["safety_control"] == "BAN"
-    rescue ElevenlabsClient::ValidationError, ElevenlabsClient::APIError, ElevenlabsClient::NotFoundError
-      # If we can't get the voice, assume it's not banned
-      false
-    end
-
-    # Check if a voice is active (exists in the voice list)
-    # @param voice_id [String] The ID of the voice to check
-    # @return [Boolean] True if the voice is active
-    def active?(voice_id)
-      voices = list
-      active_voice_ids = voices["voices"].map { |voice| voice["voice_id"] }
-      active_voice_ids.include?(voice_id)
-    rescue ElevenlabsClient::ValidationError, ElevenlabsClient::APIError, ElevenlabsClient::NotFoundError
-      # If we can't get the voice list, assume it's not active
-      false
-    end
-
     # POST /v1/similar-voices
     # Returns a list of shared voices similar to the provided audio sample
     # Documentation: https://elevenlabs.io/docs/api-reference/voices/similar-voices
@@ -500,6 +477,29 @@ module ElevenlabsClient
     alias_method :default_settings, :get_default_settings
     alias_method :voice_settings, :get_settings
     alias_method :update_settings, :edit_settings
+
+    # Check if a voice is banned (safety control)
+    # @param voice_id [String] The ID of the voice to check
+    # @return [Boolean] True if the voice is banned
+    def banned?(voice_id)
+      voice = get(voice_id)
+      voice["safety_control"] == "BAN"
+    rescue ElevenlabsClient::ValidationError, ElevenlabsClient::APIError, ElevenlabsClient::NotFoundError
+      # If we can't get the voice, assume it's not banned
+      false
+    end
+
+    # Check if a voice is active (exists in the voice list)
+    # @param voice_id [String] The ID of the voice to check
+    # @return [Boolean] True if the voice is active
+    def active?(voice_id)
+      voices = list
+      active_voice_ids = voices["voices"].map { |voice| voice["voice_id"] }
+      active_voice_ids.include?(voice_id)
+    rescue ElevenlabsClient::ValidationError, ElevenlabsClient::APIError, ElevenlabsClient::NotFoundError
+      # If we can't get the voice list, assume it's not active
+      false
+    end
 
     private
 

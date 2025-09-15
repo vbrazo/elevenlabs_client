@@ -96,10 +96,23 @@ module ElevenlabsClient
       @client.get(endpoint)
     end
 
+    # DELETE /v1/speech-to-text/transcripts/:transcription_id
+    # Delete a previously generated transcript by its ID
+    # Documentation: https://elevenlabs.io/docs/api-reference/speech-to-text/delete-transcript
+    #
+    # @param transcription_id [String] The unique ID of the transcript to delete
+    # @return [Hash] Delete confirmation response
+    def delete_transcript(transcription_id)
+      endpoint = "/v1/speech-to-text/transcripts/#{transcription_id}"
+      @client.delete(endpoint)
+    end
+
     # Alias methods for convenience
     alias_method :transcribe, :create
     alias_method :get_transcription, :get_transcript
     alias_method :retrieve_transcript, :get_transcript
+    alias_method :delete_transcription, :delete_transcript
+    alias_method :remove_transcript, :delete_transcript
 
     private
 

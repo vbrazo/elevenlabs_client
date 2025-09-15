@@ -160,6 +160,29 @@ class SpeechToTextController < ApplicationController
     end
   end
 
+  # DELETE /speech_to_text/transcript/:id
+  # Delete a transcript
+  def destroy
+    transcription_id = params[:id]
+
+    begin
+      result = @client.speech_to_text.delete_transcript(transcription_id)
+
+      render json: {
+        transcription_id: transcription_id,
+        message: result["message"],
+        status: "deleted"
+      }
+
+    rescue ElevenlabsClient::NotFoundError => e
+      render json: { error: "Transcript not found", details: e.message }, status: :not_found
+    rescue ElevenlabsClient::AuthenticationError => e
+      render json: { error: "Authentication failed", details: e.message }, status: :unauthorized
+    rescue ElevenlabsClient::APIError => e
+      render json: { error: "API error occurred", details: e.message }, status: :internal_server_error
+    end
+  end
+
   # GET /speech_to_text/transcript/:id/download/:format
   # Download transcript in specific format (SRT, VTT, TXT)
   def download
@@ -350,6 +373,7 @@ end
 #     post :transcribe_webhook
 #     post :batch_transcribe
 #     get 'transcript/:id', to: :show
+#     delete 'transcript/:id', to: :destroy
 #     get 'transcript/:id/download/:format', to: :download
 #     get 'speakers/:id', to: :speakers
 #   end
