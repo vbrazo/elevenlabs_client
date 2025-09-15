@@ -399,4 +399,120 @@ RSpec.describe "ElevenlabsClient Text-to-Voice Integration" do
         }
     end
   end
+
+  describe "voice preview streaming functionality" do
+    let(:generated_voice_id) { "gen_voice_preview_123" }
+    let(:audio_chunks) { ["audio_chunk_1", "audio_chunk_2", "audio_chunk_3"] }
+
+    before do
+      stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+        .to_return(status: 200, body: audio_chunks.join)
+    end
+
+    it "streams voice preview through client interface" do
+      collected_chunks = []
+      
+      client.text_to_voice.stream_preview(generated_voice_id) do |chunk|
+        collected_chunks << chunk
+      end
+
+      expect(collected_chunks).not_to be_empty
+      expect(WebMock).to have_requested(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+        .with(
+          headers: { "xi-api-key" => api_key, "Accept" => "audio/mpeg" }
+        )
+    end
+
+    it "supports the stream_voice_preview alias method" do
+      client.text_to_voice.stream_voice_preview(generated_voice_id) { |chunk| }
+
+      expect(WebMock).to have_requested(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+    end
+
+    context "when generated voice does not exist" do
+      before do
+        stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/nonexistent_voice/stream")
+          .to_return(status: 404, body: "Generated voice not found")
+      end
+
+      it "raises NotFoundError" do
+        expect {
+          client.text_to_voice.stream_preview("nonexistent_voice") { |chunk| }
+        }.to raise_error(ElevenlabsClient::NotFoundError)
+      end
+    end
+
+    context "when generated voice is invalid" do
+      before do
+        stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/invalid_voice/stream")
+          .to_return(
+            status: 422,
+            body: {
+              detail: [
+                {
+                  loc: ["generated_voice_id"],
+                  msg: "Invalid generated voice ID format",
+                  type: "value_error"
+                }
+              ]
+            }.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+      end
+
+      it "raises UnprocessableEntityError" do
+        expect {
+          client.text_to_voice.stream_preview("invalid_voice") { |chunk| }
+        }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
+      end
+    end
+  end
+
+  describe "complete voice design and preview workflow" do
+    let(:voice_description) { "Professional narrator voice for audiobooks" }
+    let(:generated_voice_id) { "workflow_voice_456" }
+    
+    let(:design_response) do
+      {
+        "previews" => [
+          {
+            "generated_voice_id" => generated_voice_id,
+            "audio_base_64" => "base64_preview_audio",
+            "text" => "This is a preview of your designed voice"
+          }
+        ]
+      }
+    end
+
+    before do
+      stub_request(:post, "https://api.elevenlabs.io/v1/text-to-voice/design")
+        .to_return(
+          status: 200,
+          body: design_response.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+      
+      stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+        .to_return(status: 200, body: "streaming_audio_preview")
+    end
+
+    it "supports complete design-to-preview workflow" do
+      # Step 1: Design the voice
+      design_result = client.text_to_voice.design(voice_description)
+      expect(design_result["previews"]).to be_an(Array)
+      expect(design_result["previews"].first["generated_voice_id"]).to eq(generated_voice_id)
+
+      # Step 2: Stream the preview
+      preview_chunks = []
+      client.text_to_voice.stream_preview(generated_voice_id) do |chunk|
+        preview_chunks << chunk
+      end
+
+      expect(preview_chunks.join).to eq("streaming_audio_preview")
+      
+      # Verify both API calls were made
+      expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-voice/design")
+      expect(WebMock).to have_requested(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+    end
+  end
 end

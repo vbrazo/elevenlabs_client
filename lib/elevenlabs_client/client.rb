@@ -150,6 +150,24 @@ module ElevenlabsClient
       handle_response(response)
     end
 
+    # Makes an authenticated GET request with streaming response
+    # @param path [String] API endpoint path
+    # @param block [Proc] Block to handle each chunk
+    # @return [Faraday::Response] Response object
+    def get_streaming(path, &block)
+      response = @conn.get(path) do |req|
+        req.headers["xi-api-key"] = api_key
+        req.headers["Accept"] = "audio/mpeg"
+        
+        # Set up streaming callback
+        req.options.on_data = proc do |chunk, _|
+          block.call(chunk) if block_given?
+        end
+      end
+
+      handle_response(response)
+    end
+
     # Makes an authenticated POST request with streaming response for timestamp data
     # @param path [String] API endpoint path
     # @param body [Hash, nil] Request body

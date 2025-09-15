@@ -229,19 +229,53 @@ class TextToVoiceController < ApplicationController
   end
   
   # GET /text_to_voice/voice_preview/:generated_voice_id
-  # Get audio preview for a generated voice
+  # Stream audio preview for a generated voice
   def voice_preview
-    # In a real application, you might cache these or store them temporarily
-    # This is a simplified example
+    generated_voice_id = params[:generated_voice_id]
     
-    # You would typically store the preview data when designing voices
-    # and retrieve it here. For this example, we'll return a placeholder.
-    
-    render json: {
-      success: false,
-      error: "Preview not found. Please design a voice first.",
-      suggestion: "Use the /design endpoint to generate voice previews"
-    }, status: :not_found
+    unless generated_voice_id.present?
+      return render json: { 
+        success: false, 
+        error: "generated_voice_id parameter is required" 
+      }, status: :bad_request
+    end
+
+    begin
+      response.headers["Content-Type"] = "audio/mpeg"
+      response.headers["Cache-Control"] = "no-cache"
+      response.headers["Connection"] = "keep-alive"
+
+      @client.text_to_voice.stream_preview(generated_voice_id) do |chunk|
+        response.stream.write(chunk)
+      end
+
+    rescue ElevenlabsClient::NotFoundError => e
+      render json: { 
+        success: false, 
+        error: "Generated voice not found", 
+        details: e.message 
+      }, status: :not_found
+    rescue ElevenlabsClient::UnprocessableEntityError => e
+      render json: { 
+        success: false, 
+        error: "Invalid generated voice ID", 
+        details: e.message 
+      }, status: :unprocessable_entity
+    rescue ElevenlabsClient::AuthenticationError => e
+      render json: { 
+        success: false, 
+        error: "Authentication failed", 
+        details: e.message 
+      }, status: :unauthorized
+    rescue ElevenlabsClient::APIError => e
+      render json: { 
+        success: false, 
+        error: "Preview streaming failed", 
+        details: e.message 
+      }, status: :internal_server_error
+    ensure
+      response.stream.close
+    end
   end
   
   # DELETE /text_to_voice/voices/:voice_id

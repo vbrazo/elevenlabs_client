@@ -6,9 +6,11 @@ Design and create custom voices from text descriptions using ElevenLabs' advance
 
 - `client.text_to_voice.design(voice_description, **options)` - Design a voice from description
 - `client.text_to_voice.create(voice_name, voice_description, generated_voice_id, **options)` - Create a voice from design
+- `client.text_to_voice.stream_preview(generated_voice_id, &block)` - Stream a voice preview
 - `client.text_to_voice.list_voices()` - List all available voices
 - `client.text_to_voice.design_voice(voice_description, **options)` - Alias for design method
 - `client.text_to_voice.create_from_generated_voice(...)` - Alias for create method
+- `client.text_to_voice.stream_voice_preview(generated_voice_id, &block)` - Alias for stream_preview method
 
 ## Usage Examples
 
@@ -26,6 +28,34 @@ generated_voice_id = previews.first["generated_voice_id"]
 audio_preview = previews.first["audio_base_64"]
 
 puts "Generated voice ID: #{generated_voice_id}"
+```
+
+### Streaming Voice Preview
+
+```ruby
+# After designing a voice, you can stream the preview audio
+voice_description = "Professional narrator voice with clear diction"
+design_result = client.text_to_voice.design(voice_description)
+
+generated_voice_id = design_result["previews"].first["generated_voice_id"]
+
+# Stream the preview audio in real-time
+audio_chunks = []
+client.text_to_voice.stream_preview(generated_voice_id) do |chunk|
+  audio_chunks << chunk
+  puts "Received audio chunk: #{chunk.bytesize} bytes"
+end
+
+# Save the complete audio
+File.open("voice_preview.mp3", "wb") do |file|
+  file.write(audio_chunks.join)
+end
+
+# Using the alias method
+client.text_to_voice.stream_voice_preview(generated_voice_id) do |chunk|
+  # Process each audio chunk as it arrives
+  play_audio_chunk(chunk)
+end
 ```
 
 ### Advanced Voice Design

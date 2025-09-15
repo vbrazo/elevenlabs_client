@@ -460,6 +460,125 @@ RSpec.describe ElevenlabsClient::TextToVoice do
     end
   end
 
+  describe "#stream_preview" do
+    let(:generated_voice_id) { "generated_voice_123" }
+    let(:audio_chunks) { ["chunk1", "chunk2", "chunk3"] }
+
+    before do
+      # Mock the streaming response
+      stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+        .to_return(status: 200, body: audio_chunks.join)
+    end
+
+    context "with valid generated_voice_id" do
+      it "streams voice preview successfully" do
+        collected_chunks = []
+        
+        text_to_voice.stream_preview(generated_voice_id) do |chunk|
+          collected_chunks << chunk
+        end
+
+        expect(collected_chunks).not_to be_empty
+      end
+
+      it "sends the correct GET request" do
+        text_to_voice.stream_preview(generated_voice_id) { |chunk| }
+
+        expect(WebMock).to have_requested(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+          .with(
+            headers: {
+              "xi-api-key" => api_key,
+              "Accept" => "audio/mpeg"
+            }
+          )
+      end
+
+      it "works without a block" do
+        expect {
+          text_to_voice.stream_preview(generated_voice_id)
+        }.not_to raise_error
+      end
+    end
+
+    context "when API returns an error" do
+      context "with unprocessable entity error" do
+        before do
+          stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+            .to_return(
+              status: 422,
+              body: {
+                detail: [
+                  {
+                    loc: ["generated_voice_id"],
+                    msg: "Invalid generated voice ID",
+                    type: "value_error"
+                  }
+                ]
+              }.to_json,
+              headers: { "Content-Type" => "application/json" }
+            )
+        end
+
+        it "raises UnprocessableEntityError" do
+          expect {
+            text_to_voice.stream_preview(generated_voice_id) { |chunk| }
+          }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
+        end
+      end
+
+      context "with authentication error" do
+        before do
+          stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+            .to_return(status: 401, body: "Unauthorized")
+        end
+
+        it "raises AuthenticationError" do
+          expect {
+            text_to_voice.stream_preview(generated_voice_id) { |chunk| }
+          }.to raise_error(ElevenlabsClient::AuthenticationError)
+        end
+      end
+
+      context "with not found error" do
+        before do
+          stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{generated_voice_id}/stream")
+            .to_return(status: 404, body: "Generated voice not found")
+        end
+
+        it "raises NotFoundError" do
+          expect {
+            text_to_voice.stream_preview(generated_voice_id) { |chunk| }
+          }.to raise_error(ElevenlabsClient::NotFoundError)
+        end
+      end
+    end
+
+    context "with different generated voice IDs" do
+      it "uses the correct generated voice ID in the endpoint" do
+        different_voice_id = "different_voice_456"
+        
+        stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{different_voice_id}/stream")
+          .to_return(status: 200, body: "audio_data")
+
+        text_to_voice.stream_preview(different_voice_id) { |chunk| }
+
+        expect(WebMock).to have_requested(:get, "https://api.elevenlabs.io/v1/text-to-voice/#{different_voice_id}/stream")
+      end
+    end
+
+    context "when collecting all chunks" do
+      it "allows collecting all streamed chunks" do
+        all_chunks = []
+        
+        text_to_voice.stream_preview(generated_voice_id) do |chunk|
+          all_chunks << chunk
+        end
+
+        expect(all_chunks.join).to eq(audio_chunks.join)
+      end
+    end
+  end
+
   describe "alias methods" do
     let(:voice_description) { "Test voice description" }
 
@@ -468,6 +587,8 @@ RSpec.describe ElevenlabsClient::TextToVoice do
         .to_return(status: 200, body: {}.to_json)
       stub_request(:post, "https://api.elevenlabs.io/v1/text-to-voice")
         .to_return(status: 200, body: {}.to_json)
+      stub_request(:get, "https://api.elevenlabs.io/v1/text-to-voice/generated_voice_123/stream")
+        .to_return(status: 200, body: "audio_data")
     end
 
     describe "#design_voice" do
@@ -483,6 +604,14 @@ RSpec.describe ElevenlabsClient::TextToVoice do
         text_to_voice.create_from_generated_voice("Name", "Description", "generated_id")
 
         expect(WebMock).to have_requested(:post, "https://api.elevenlabs.io/v1/text-to-voice")
+      end
+    end
+
+    describe "#stream_voice_preview" do
+      it "is an alias for stream_preview method" do
+        text_to_voice.stream_voice_preview("generated_voice_123") { |chunk| }
+
+        expect(WebMock).to have_requested(:get, "https://api.elevenlabs.io/v1/text-to-voice/generated_voice_123/stream")
       end
     end
   end

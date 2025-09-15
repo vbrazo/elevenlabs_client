@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ElevenlabsClient::Models do
+RSpec.describe ElevenlabsClient::Admin::Models do
   let(:api_key) { "test_api_key" }
   let(:client) { ElevenlabsClient::Client.new(api_key: api_key) }
   let(:models) { described_class.new(client) }

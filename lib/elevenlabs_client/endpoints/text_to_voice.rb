@@ -74,6 +74,18 @@ module ElevenlabsClient
       @client.post(endpoint, request_body)
     end
 
+    # GET /v1/text-to-voice/:generated_voice_id/stream
+    # Stream a voice preview that was created via the /v1/text-to-voice/design endpoint
+    # Documentation: https://elevenlabs.io/docs/api-reference/text-to-voice/stream-voice-preview
+    #
+    # @param generated_voice_id [String] The generated_voice_id to stream
+    # @param block [Proc] Block to handle each streaming chunk
+    # @return [Faraday::Response] The response object
+    def stream_preview(generated_voice_id, &block)
+      endpoint = "/v1/text-to-voice/#{generated_voice_id}/stream"
+      @client.get_streaming(endpoint, &block)
+    end
+
     # GET /v1/voices
     # Retrieves all voices associated with your Elevenlabs account
     # Documentation: https://elevenlabs.io/docs/api-reference/voices
@@ -86,6 +98,7 @@ module ElevenlabsClient
 
     alias_method :design_voice, :design
     alias_method :create_from_generated_voice, :create
+    alias_method :stream_voice_preview, :stream_preview
 
     private
 

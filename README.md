@@ -118,6 +118,11 @@ audio_data = client.sound_generation.generate("Ocean waves crashing on rocks")
 design_result = client.text_to_voice.design("Warm, professional female voice")
 generated_voice_id = design_result["previews"].first["generated_voice_id"]
 
+# Stream the voice preview
+client.text_to_voice.stream_preview(generated_voice_id) do |chunk|
+  puts "Received preview chunk: #{chunk.bytesize} bytes"
+end
+
 voice_result = client.text_to_voice.create(
   "Professional Voice",
   "Warm, professional female voice",

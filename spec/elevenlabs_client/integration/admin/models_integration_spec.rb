@@ -6,7 +6,7 @@ RSpec.describe "ElevenlabsClient Models Integration" do
 
   describe "client.models accessor" do
     it "provides access to models endpoint" do
-      expect(client.models).to be_an_instance_of(ElevenlabsClient::Models)
+      expect(client.models).to be_an_instance_of(ElevenlabsClient::Admin::Models)
     end
   end
 
