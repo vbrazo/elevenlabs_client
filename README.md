@@ -439,21 +439,23 @@ end
 
 ## Rails Integration
 
-The gem is designed to work seamlessly with Rails applications. See the [examples](examples/) directory for complete controller implementations:
+The gem is designed to work seamlessly with Rails applications. See the [examples](examples/) directory for complete controller implementations and the [Rails initializer example](examples/rails_initializer.rb) for configuration setup:
 
-- [DubsController](examples/dubs_controller.rb) - Complete dubbing workflow
-- [TextToSpeechController](examples/text_to_speech_controller.rb) - TTS with error handling
-- [StreamingAudioController](examples/streaming_audio_controller.rb) - Real-time streaming
-- [TextToDialogueController](examples/text_to_dialogue_controller.rb) - Dialogue generation
-- [SoundGenerationController](examples/sound_generation_controller.rb) - Sound effects
-- [MusicController](examples/music_controller.rb) - AI music composition and streaming
-- [TextToVoiceController](examples/text_to_voice_controller.rb) - Voice design and creation
-- [VoicesController](examples/voices_controller.rb) - Voice management (CRUD operations)
-- [SpeechToSpeechController](examples/speech_to_speech_controller.rb) - Voice changer and audio transformation
-- [SpeechToTextController](examples/speech_to_text_controller.rb) - Audio/video transcription with advanced features
-- [AudioIsolationController](examples/audio_isolation_controller.rb) - Background noise removal and audio cleanup
-- [AudioNativeController](examples/audio_native_controller.rb) - Embeddable audio players for websites
-- [ForcedAlignmentController](examples/forced_alignment_controller.rb) - Audio-text timing alignment and subtitle generation
+- **Core Controllers**
+  - [DubsController](examples/dubs_controller.rb) - Complete dubbing workflow
+  - [TextToSpeechController](examples/text_to_speech_controller.rb) - TTS with error handling
+  - [StreamingAudioController](examples/streaming_audio_controller.rb) - Real-time streaming
+  - [TextToDialogueController](examples/text_to_dialogue_controller.rb) - Dialogue generation
+  - [SoundGenerationController](examples/sound_generation_controller.rb) - Sound effects
+  - [MusicController](examples/music_controller.rb) - AI music composition and streaming
+  - [TextToVoiceController](examples/text_to_voice_controller.rb) - Voice design and creation
+  - [VoicesController](examples/voices_controller.rb) - Voice management (CRUD operations)
+  - [SpeechToSpeechController](examples/speech_to_speech_controller.rb) - Voice changer and audio transformation
+  - [SpeechToTextController](examples/speech_to_text_controller.rb) - Audio/video transcription with advanced features
+  - [AudioIsolationController](examples/audio_isolation_controller.rb) - Background noise removal and audio cleanup
+  - [AudioNativeController](examples/audio_native_controller.rb) - Embeddable audio players for websites
+  - [ForcedAlignmentController](examples/forced_alignment_controller.rb) - Audio-text timing alignment and subtitle generation
+
 - **Admin Controllers** - Complete administrative functionality:
   - [Admin::HistoryController](examples/admin/history_controller.rb) - Generated audio history management and analytics
   - [Admin::UsageController](examples/admin/usage_controller.rb) - Character usage monitoring and analytics
@@ -462,7 +464,29 @@ The gem is designed to work seamlessly with Rails applications. See the [example
   - [Admin::ModelsController](examples/admin/models_controller.rb) - Model information and selection guidance
   - [Admin::SamplesController](examples/admin/samples_controller.rb) - Voice sample deletion and content moderation
   - [Admin::ServiceAccountsController](examples/admin/service_accounts_controller.rb) - Service account monitoring and analytics
+  - [Admin::ServiceAccountApiKeysController](examples/admin/service_account_api_keys_controller.rb) - API key management for service accounts
   - [Admin::WebhooksController](examples/admin/webhooks_controller.rb) - Workspace webhook monitoring and health analysis
+  - [Admin::WorkspaceWebhooksController](examples/admin/workspace_webhooks_controller.rb) - Workspace-level webhook configuration
+  - [Admin::WorkspaceGroupsController](examples/admin/workspace_groups_controller.rb) - User group management and permissions
+  - [Admin::WorkspaceInvitesController](examples/admin/workspace_invites_controller.rb) - Workspace invitation management
+  - [Admin::WorkspaceMembersController](examples/admin/workspace_members_controller.rb) - Workspace member management and roles
+  - [Admin::WorkspaceResourcesController](examples/admin/workspace_resources_controller.rb) - Resource sharing and permissions
+  - [Admin::PronunciationDictionariesController](examples/admin/pronunciation_dictionaries_controller.rb) - Custom pronunciation management
+
+- **Agents Platform Controllers** - Conversational AI functionality:
+  - [AgentsPlatform::AgentsController](examples/agents_platform/agents_controller.rb) - AI agent creation and management
+  - [AgentsPlatform::ConversationsController](examples/agents_platform/conversations_controller.rb) - Real-time conversation handling
+  - [AgentsPlatform::KnowledgeBaseController](examples/agents_platform/knowledge_base_controller.rb) - Document and knowledge management
+  - [AgentsPlatform::ToolsController](examples/agents_platform/tools_controller.rb) - Agent tool management and configuration
+  - [AgentsPlatform::TestsController](examples/agents_platform/tests_controller.rb) - Agent testing and validation
+  - [AgentsPlatform::TestInvocationsController](examples/agents_platform/test_invocations_controller.rb) - Test execution and monitoring
+  - [AgentsPlatform::OutboundCallingController](examples/agents_platform/outbound_calling_controller.rb) - Automated phone call management
+  - [AgentsPlatform::BatchCallingController](examples/agents_platform/batch_calling_controller.rb) - Large-scale calling campaigns
+  - [AgentsPlatform::PhoneNumbersController](examples/agents_platform/phone_numbers_controller.rb) - Phone number management for agents
+  - [AgentsPlatform::WidgetsController](examples/agents_platform/widgets_controller.rb) - Embeddable chat widget management
+  - [AgentsPlatform::LlmUsageController](examples/agents_platform/llm_usage_controller.rb) - Language model usage analytics
+  - [AgentsPlatform::McpServersController](examples/agents_platform/mcp_servers_controller.rb) - Model Context Protocol server management
+  - [AgentsPlatform::WorkspaceController](examples/agents_platform/workspace_controller.rb) - Agent platform workspace settings
 
 ## Development
 

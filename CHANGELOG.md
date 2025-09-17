@@ -7,18 +7,149 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2024-09-17
+
 ### Added
-- Admin: Pronunciation Dictionaries
-  - Create dictionary from file: `client.pronunciation_dictionaries.add_from_file(name:, file_io: nil, filename: nil, description: nil, workspace_access: nil)`
-  - Create dictionary from rules: `client.pronunciation_dictionaries.add_from_rules(name:, rules:, description: nil, workspace_access: nil)`
-  - Get dictionary metadata: `client.pronunciation_dictionaries.get(pronunciation_dictionary_id)`
-  - Update dictionary: `client.pronunciation_dictionaries.update(pronunciation_dictionary_id, **attributes)`
-  - Download dictionary version (PLS): `client.pronunciation_dictionaries.download_pronunciation_dictionary_version(dictionary_id:, version_id:)`
-  - List dictionaries: `client.pronunciation_dictionaries.list_pronunciation_dictionaries(cursor:, page_size:, sort:, sort_direction:)`
+- **🏢 Admin: Workspace Management** - Complete workspace administration suite
+  - **Workspace Members** (`client.workspace_members.*`)
+    - Update member: `client.workspace_members.update_member(email:, is_locked: nil, workspace_role: nil)`
+  - **Workspace Resources** (`client.workspace_resources.*`)
+    - Get resource metadata: `client.workspace_resources.get_resource(resource_id:, resource_type:)`
+    - Share resource: `client.workspace_resources.share(resource_id:, role:, resource_type:, user_email: nil, group_id: nil, workspace_api_key_id: nil)`
+    - Unshare resource: `client.workspace_resources.unshare(resource_id:, resource_type:, user_email: nil, group_id: nil, workspace_api_key_id: nil)`
+  - **Workspace Groups** (`client.workspace_groups.*`)
+    - Search groups: `client.workspace_groups.search(name:)`
+    - Add member: `client.workspace_groups.add_member(group_id:, email:)`
+    - Remove member: `client.workspace_groups.remove_member(group_id:, email:)`
+  - **Workspace Invites** (`client.workspace_invites.*`)
+    - Invite user: `client.workspace_invites.invite(email:, group_ids: nil, workspace_permission: nil)`
+    - Invite multiple users: `client.workspace_invites.invite_bulk(emails:, group_ids: nil)`
+    - Delete invite: `client.workspace_invites.delete_invite(email:)`
+  - **Workspace Webhooks** (`client.workspace_webhooks.*`)
+    - List workspace webhooks: `client.workspace_webhooks.list(include_usages: nil)`
+
+- **📚 Admin: Enhanced User & Content Management**
+  - **User Subscription** (`client.user.*`)
+    - Get extended user subscription: `client.user.get_subscription` (alias: `subscription`)
+  - **Pronunciation Dictionaries** (`client.pronunciation_dictionaries.*`)
+    - Create dictionary from file: `client.pronunciation_dictionaries.add_from_file(name:, file_io: nil, filename: nil, description: nil, workspace_access: nil)`
+    - Create dictionary from rules: `client.pronunciation_dictionaries.add_from_rules(name:, rules:, description: nil, workspace_access: nil)`
+    - Get dictionary metadata: `client.pronunciation_dictionaries.get(pronunciation_dictionary_id)`
+    - Update dictionary: `client.pronunciation_dictionaries.update(pronunciation_dictionary_id, **attributes)`
+    - Download dictionary version (PLS): `client.pronunciation_dictionaries.download_pronunciation_dictionary_version(dictionary_id:, version_id:)`
+    - List dictionaries: `client.pronunciation_dictionaries.list_pronunciation_dictionaries(cursor:, page_size:, sort:, sort_direction:)`
+
+- **🤖 Agents Platform** - Complete conversational AI agent management system
+  - **Agent Management** (`client.agents.*`)
+    - Create agent: `client.agents.create(conversation_config:, platform_settings: nil, name: nil, tags: nil)`
+    - Get agent: `client.agents.get(agent_id)`
+    - List agents: `client.agents.list(page_size: nil, search: nil, sort_direction: nil, sort_by: nil, cursor: nil)`
+    - Update agent: `client.agents.update(agent_id, **options)`
+    - Delete agent: `client.agents.delete(agent_id)`
+    - Duplicate agent: `client.agents.duplicate(agent_id, **options)`
+  - **Conversation Management** (`client.conversations.*`)
+    - Create conversation: `client.conversations.create(agent_id:, **options)`
+    - Get conversation: `client.conversations.get(conversation_id)`
+    - List conversations: `client.conversations.list(**options)`
+    - Delete conversation: `client.conversations.delete(conversation_id)`
+    - Get conversation signatures: `client.conversations.get_conversation_signatures(conversation_id)`
+  - **Tools & Integrations** (`client.tools.*`)
+    - List tools: `client.tools.list`
+    - Get tool: `client.tools.get(tool_id)`
+    - Create tool: `client.tools.create(tool_config)`
+    - Update tool: `client.tools.update(tool_id, **options)`
+    - Delete tool: `client.tools.delete(tool_id)`
+  - **Knowledge Base** (`client.knowledge_base.*`)
+    - Create knowledge base: `client.knowledge_base.create(name:, **options)`
+    - Get knowledge base: `client.knowledge_base.get(knowledge_base_id)`
+    - List knowledge bases: `client.knowledge_base.list(**options)`
+    - Delete knowledge base: `client.knowledge_base.delete(knowledge_base_id)`
+  - **Testing & Quality Assurance** (`client.tests.*`, `client.test_invocations.*`)
+    - Create test: `client.tests.create(agent_id:, name:, test_questions:, **options)`
+    - Get test: `client.tests.get(test_id)`
+    - List tests: `client.tests.list(**options)`
+    - Delete test: `client.tests.delete(test_id)`
+    - Run test: `client.test_invocations.run(test_id:, **options)`
+    - Get test results: `client.test_invocations.get(test_invocation_id)`
+    - List test invocations: `client.test_invocations.list(**options)`
+  - **Phone & Communication** (`client.phone_numbers.*`, `client.outbound_calling.*`, `client.batch_calling.*`)
+    - List phone numbers: `client.phone_numbers.list(**options)`
+    - Get phone number: `client.phone_numbers.get(phone_number_id)`
+    - Create outbound call: `client.outbound_calling.create(agent_id:, customer_phone_number:, **options)`
+    - Submit batch calls: `client.batch_calling.submit(call_name:, agent_id:, agent_phone_number_id:, scheduled_time_unix:, recipients:)`
+    - List batch calls: `client.batch_calling.list(**options)`
+    - Get batch call: `client.batch_calling.get(batch_call_id)`
+  - **Widgets & Integration** (`client.widgets.*`)
+    - Create widget: `client.widgets.create(agent_id:, name:, **options)`
+    - Get widget: `client.widgets.get(widget_id)`
+    - List widgets: `client.widgets.list(**options)`
+    - Delete widget: `client.widgets.delete(widget_id)`
+  - **Workspace & Analytics** (`client.workspace.*`, `client.llm_usage.*`)
+    - Get workspace settings: `client.workspace.get`
+    - Update workspace: `client.workspace.update(**options)`
+    - Get LLM usage: `client.llm_usage.get(**options)`
+  - **MCP Servers** (`client.mcp_servers.*`)
+    - Create MCP server: `client.mcp_servers.create(config:)`
+    - List MCP servers: `client.mcp_servers.list`
+    - Get MCP server: `client.mcp_servers.get(mcp_server_id)`
+    - Update MCP server: `client.mcp_servers.update(mcp_server_id, **options)`
+    - Delete MCP server: `client.mcp_servers.delete(mcp_server_id)`
+
+### Enhanced
+- **🔧 HTTP Client Architecture** - Enhanced HTTP client with new methods
+  - Added `delete_with_body` method for DELETE requests with request bodies
+  - Improved error handling across all HTTP methods
+  - Enhanced configuration system with `Configuration` class
+  - Added `HttpClient` class for better separation of concerns
 
 ### Docs
-- Added `docs/admin/PRONUNCIATION_DICTIONARIES.md`
-- Updated `docs/admin/README.md` and main `README.md` with links and examples
+- **📚 Admin Documentation**
+  - Added `docs/admin/PRONUNCIATION_DICTIONARIES.md`
+  - Added `docs/admin/WORKSPACE_GROUPS.md`
+  - Added `docs/admin/WORKSPACE_INVITES.md`
+  - Added `docs/admin/WORKSPACE_MEMBERS.md`
+  - Added `docs/admin/WORKSPACE_RESOURCES.md`
+  - Added `docs/admin/WORKSPACE_WEBHOOKS.md`
+- **🤖 Agents Platform Documentation**
+  - Added complete `docs/agents_platform/` directory with comprehensive guides:
+    - `AGENTS.md` - Agent creation and management
+    - `CONVERSATIONS.md` - Conversation handling
+    - `TOOLS.md` - Tool integration and management
+    - `KNOWLEDGE_BASE.md` - Knowledge base management
+    - `TESTS.md` - Testing and quality assurance
+    - `TEST_INVOCATIONS.md` - Test execution and results
+    - `PHONE_NUMBERS.md` - Phone number management
+    - `OUTBOUND_CALLING.md` - Outbound call handling
+    - `BATCH_CALLING.md` - Batch calling operations
+    - `WIDGETS.md` - Widget creation and embedding
+    - `WORKSPACE.md` - Workspace configuration
+    - `LLM_USAGE.md` - LLM usage analytics
+    - `MCP_SERVERS.md` - MCP server integration
+- **📖 Architecture Documentation**
+  - Added `docs/ARCHITECTURE.md` - Complete system architecture overview
+- Updated `docs/admin/README.md` and main `README.md` with all new endpoints and examples
+
+### Examples
+- **🎯 Admin Controllers** - Production-ready Rails integration examples
+  - Added `examples/admin/workspace_groups_controller.rb`
+  - Added `examples/admin/workspace_invites_controller.rb`
+  - Added `examples/admin/workspace_members_controller.rb`
+  - Added `examples/admin/workspace_resources_controller.rb`
+  - Added `examples/admin/workspace_webhooks_controller.rb`
+- **🤖 Agents Platform Controllers** - Complete conversational AI examples
+  - Added `examples/agents_platform/agents_controller.rb`
+  - Added `examples/agents_platform/conversations_controller.rb`
+  - Added `examples/agents_platform/tools_controller.rb`
+  - Added `examples/agents_platform/knowledge_base_controller.rb`
+  - Added `examples/agents_platform/tests_controller.rb`
+  - Added `examples/agents_platform/test_invocations_controller.rb`
+  - Added `examples/agents_platform/phone_numbers_controller.rb`
+  - Added `examples/agents_platform/outbound_calling_controller.rb`
+  - Added `examples/agents_platform/batch_calling_controller.rb`
+  - Added `examples/agents_platform/widgets_controller.rb`
+  - Added `examples/agents_platform/workspace_controller.rb`
+  - Added `examples/agents_platform/llm_usage_controller.rb`
+  - Added `examples/agents_platform/mcp_servers_controller.rb`
 
 ## [0.7.0] - 2024-09-15
 
