@@ -93,9 +93,15 @@ yarn-error.log*
 *.m4a
 
 # API keys and secrets (extra safety)
-*api_key*
-*secret*
-*token*
+*.api_key
+*.secret
+*.token
+.api_key
+.secret
+.token
+*_api_key.txt
+*_secret.txt
+*_token.txt
 config/master.key
 
 # Build artifacts
@@ -125,5 +131,6 @@ config/environments/*.local.yml
 # Test artifacts
 /spec/fixtures/files/
 /spec/support/fixtures/
-test_*.rb
+/tmp/test_*.rb
 *_test_output.*
+*_test_results.*

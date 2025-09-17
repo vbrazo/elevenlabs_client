@@ -8,30 +8,53 @@ See [Architecture Documentation](docs/ARCHITECTURE.md) for details.
 
 ## Features
 
-🎙️ **Text-to-Speech** - Convert text to natural-sounding speech  
-🎬 **Dubbing** - Create dubbed versions of audio/video content  
-💬 **Dialogue Generation** - Multi-speaker conversations  
-🔊 **Sound Generation** - AI-generated sound effects and ambient audio  
-🎵 **Music Generation** - AI-powered music composition and streaming  
-🎨 **Voice Design** - Create custom voices from text descriptions  
-🎭 **Voice Management** - Create, edit, and manage individual voices  
-🔄 **Speech-to-Speech** - Transform audio from one voice to another (Voice Changer)  
-📝 **Speech-to-Text** - Transcribe audio and video files with advanced features  
-🔇 **Audio Isolation** - Remove background noise from audio files  
-📱 **Audio Native** - Create embeddable audio players for websites  
-⏱️ **Forced Alignment** - Get precise timing information for audio transcripts  
-📊 **Admin APIs** - Complete administrative functionality:
-  - **History** - Manage and analyze your generated audio history
-  - **Usage** - Monitor character usage and analytics  
-  - **User** - Access account information and subscription details
-  - **Voice Library** - Browse and manage community shared voices
-  - **Models** - List available models and their capabilities
-  - **Samples** - Delete voice samples for content moderation
-  - **Service Accounts** - Monitor service accounts and API keys
-  - **Webhooks** - Monitor workspace webhooks and their health  
-📡 **Streaming** - Real-time audio streaming  
-⚙️ **Configurable** - Flexible configuration options  
-🧪 **Well-tested** - Comprehensive test coverage  
+### 🎙️ **Core Audio Features**
+- **Text-to-Speech** - Convert text to natural-sounding speech with timestamps
+- **Speech-to-Speech** - Transform audio from one voice to another (Voice Changer)  
+- **Speech-to-Text** - Transcribe audio and video files with advanced features
+- **Text-to-Dialogue** - Multi-speaker conversations and dialogue generation
+- **Voice Design** - Create custom voices from text descriptions
+- **Voice Management** - Create, edit, and manage individual voices
+- **Audio Isolation** - Remove background noise from audio files
+- **Forced Alignment** - Get precise timing information for audio transcripts
+
+### 🎬 **Content Creation**
+- **Dubbing** - Create dubbed versions of audio/video content
+- **Sound Generation** - AI-generated sound effects and ambient audio
+- **Music Generation** - AI-powered music composition and streaming
+- **Audio Native** - Create embeddable audio players for websites
+
+### 🤖 **Agents Platform** (Conversational AI)
+- **Agents** - Create and manage AI conversational agents
+- **Conversations** - Handle real-time conversations and chat interactions
+- **Knowledge Base** - Upload and manage documents for agent knowledge
+- **Tools** - Define and manage tools that agents can use
+- **Tests** - Create and run tests for agent performance
+- **Outbound Calling** - Make automated phone calls with agents
+- **Batch Calling** - Execute large-scale calling campaigns
+- **Phone Numbers** - Manage phone numbers for voice agents
+- **Widgets** - Create embeddable chat widgets for websites
+- **LLM Usage** - Monitor and analyze language model usage
+- **MCP Servers** - Manage Model Context Protocol servers
+
+### 📊 **Admin & Management APIs**
+- **History** - Manage and analyze your generated audio history
+- **Usage** - Monitor character usage and analytics  
+- **User** - Access account information and subscription details
+- **Voice Library** - Browse and manage community shared voices
+- **Models** - List available models and their capabilities
+- **Samples** - Delete voice samples for content moderation
+- **Service Accounts** - Monitor service accounts and API keys
+- **Webhooks** - Monitor workspace webhooks and their health
+- **Workspace Management** - Manage workspace groups, invites, members, and resources
+- **Pronunciation Dictionaries** - Custom pronunciation rules
+
+### 🔧 **Technical Features**
+- **WebSocket Streaming** - Real-time audio streaming with low latency
+- **Multiple Output Formats** - Support for various audio formats
+- **Flexible Configuration** - Environment-based and programmatic configuration
+- **Comprehensive Error Handling** - Detailed error messages and status codes
+- **Well-tested** - Extensive test coverage with integration tests  
 
 ## Installation
 
@@ -277,33 +300,61 @@ end
 
 ### Core APIs
 
-- **[Dubbing API](docs/DUBBING.md)** - Create dubbed versions of audio/video content
+### 🎙️ **Core Audio APIs**
 - **[Text-to-Speech API](docs/TEXT_TO_SPEECH.md)** - Convert text to natural speech
-- **[Text-to-Speech Streaming API](docs/TEXT_TO_SPEECH_STREAMING.md)** - Real-time audio streaming
-- **[Text-to-Dialogue API](docs/TEXT_TO_DIALOGUE.md)** - Multi-speaker conversations
-- **[Sound Generation API](docs/SOUND_GENERATION.md)** - AI-generated sound effects
-- **[Music Generation API](docs/MUSIC.md)** - AI-powered music composition and streaming
-- **[Text-to-Voice API](docs/TEXT_TO_VOICE.md)** - Design and create custom voices
-- **[Voice Management API](docs/VOICES.md)** - Manage individual voices (CRUD operations)
+- **[Text-to-Speech Streaming API](docs/TEXT_TO_SPEECH_STREAMING.md)** - Real-time audio streaming  
+- **[Text-to-Speech with Timestamps](docs/TEXT_TO_SPEECH_WITH_TIMESTAMPS.md)** - Speech synthesis with precise timing
 - **[Speech-to-Speech API](docs/SPEECH_TO_SPEECH.md)** - Transform audio from one voice to another
 - **[Speech-to-Text API](docs/SPEECH_TO_TEXT.md)** - Transcribe audio and video files
+- **[Text-to-Dialogue API](docs/TEXT_TO_DIALOGUE.md)** - Multi-speaker conversations
+- **[Text-to-Dialogue Streaming](docs/TEXT_TO_DIALOGUE_STREAMING.md)** - Real-time dialogue generation
+- **[Voice Design API](docs/TEXT_TO_VOICE.md)** - Design and create custom voices from text descriptions
+- **[Voice Management API](docs/VOICES.md)** - Manage individual voices (CRUD operations)
 - **[Audio Isolation API](docs/AUDIO_ISOLATION.md)** - Remove background noise from audio
-- **[Audio Native API](docs/AUDIO_NATIVE.md)** - Create embeddable audio players
-- **[Forced Alignment API](docs/FORCED_ALIGNMENT.md)** - Get precise timing information
-- **[Admin APIs](docs/admin/README.md)** - Complete administrative functionality:
-  - **[User Management](docs/admin/USER.md)** - Account information and subscription details
-  - **[Usage Analytics](docs/admin/USAGE.md)** - Character usage monitoring and analytics
-  - **[History Management](docs/admin/HISTORY.md)** - Generated audio history management
-  - **[Voice Library](docs/admin/VOICE_LIBRARY.md)** - Community voice browsing and management
-  - **[Models API](docs/admin/MODELS.md)** - List available models and capabilities
-  - **[Samples Management](docs/admin/SAMPLES.md)** - Delete voice samples for content moderation
-  - **[Service Accounts](docs/admin/SERVICE_ACCOUNTS.md)** - Monitor service accounts and API keys
-  - **[Webhooks Management](docs/admin/WEBHOOKS.md)** - Monitor workspace webhooks and their health
-  - **[Workspace Groups](docs/admin/WORKSPACE_GROUPS.md)** - Manage user groups and members
-  - **[Workspace Invites](docs/admin/WORKSPACE_INVITES.md)** - Invite users and revoke invitations
-  - **[Workspace Members](docs/admin/WORKSPACE_MEMBERS.md)** - Update member attributes and roles
-  - **[Workspace Resources](docs/admin/WORKSPACE_RESOURCES.md)** - Share/unshare resources across the workspace
-  - **[Pronunciation Dictionaries](docs/admin/PRONUNCIATION_DICTIONARIES.md)** - Create, manage and download pronunciation dictionaries
+- **[Forced Alignment API](docs/FORCED_ALIGNMENT.md)** - Get precise timing information for transcripts
+
+### 🎬 **Content Creation APIs**
+- **[Dubbing API](docs/DUBBING.md)** - Create dubbed versions of audio/video content
+- **[Sound Generation API](docs/SOUND_GENERATION.md)** - AI-generated sound effects and ambient audio
+- **[Music Generation API](docs/MUSIC.md)** - AI-powered music composition and streaming
+- **[Audio Native API](docs/AUDIO_NATIVE.md)** - Create embeddable audio players for websites
+
+### 🤖 **Agents Platform APIs** (Conversational AI)
+- **[Agents Platform Overview](docs/agents_platform/README.md)** - Complete conversational AI platform
+- **[Agents API](docs/agents_platform/AGENTS.md)** - Create and manage AI conversational agents
+- **[Conversations API](docs/agents_platform/CONVERSATIONS.md)** - Handle real-time conversations and chat interactions
+- **[Knowledge Base API](docs/agents_platform/KNOWLEDGE_BASE.md)** - Upload and manage documents for agent knowledge
+- **[Tools API](docs/agents_platform/TOOLS.md)** - Define and manage tools that agents can use
+- **[Tests API](docs/agents_platform/TESTS.md)** - Create and run tests for agent performance
+- **[Test Invocations API](docs/agents_platform/TEST_INVOCATIONS.md)** - Execute and monitor test runs
+- **[Outbound Calling API](docs/agents_platform/OUTBOUND_CALLING.md)** - Make automated phone calls with agents
+- **[Batch Calling API](docs/agents_platform/BATCH_CALLING.md)** - Execute large-scale calling campaigns
+- **[Phone Numbers API](docs/agents_platform/PHONE_NUMBERS.md)** - Manage phone numbers for voice agents
+- **[Widgets API](docs/agents_platform/WIDGETS.md)** - Create embeddable chat widgets for websites
+- **[LLM Usage API](docs/agents_platform/LLM_USAGE.md)** - Monitor and analyze language model usage
+- **[MCP Servers API](docs/agents_platform/MCP_SERVERS.md)** - Manage Model Context Protocol servers
+- **[Workspace API](docs/agents_platform/WORKSPACE.md)** - Manage agent platform workspace settings
+
+### 📊 **Admin & Management APIs**
+- **[Admin APIs Overview](docs/admin/README.md)** - Complete administrative functionality
+- **[User Management](docs/admin/USER.md)** - Account information and subscription details
+- **[Usage Analytics](docs/admin/USAGE.md)** - Character usage monitoring and analytics
+- **[History Management](docs/admin/HISTORY.md)** - Generated audio history management
+- **[Voice Library](docs/admin/VOICE_LIBRARY.md)** - Community voice browsing and management
+- **[Models API](docs/admin/MODELS.md)** - List available models and capabilities
+- **[Samples Management](docs/admin/SAMPLES.md)** - Delete voice samples for content moderation
+- **[Service Accounts](docs/admin/SERVICE_ACCOUNTS.md)** - Monitor and manage service accounts
+- **[Service Account API Keys](docs/admin/SERVICE_ACCOUNT_API_KEYS.md)** - Manage API keys for service accounts
+- **[Webhooks Management](docs/admin/WEBHOOKS.md)** - Monitor workspace webhooks and their health
+- **[Workspace Webhooks](docs/admin/WORKSPACE_WEBHOOKS.md)** - Configure and manage workspace-level webhooks
+- **[Workspace Groups](docs/admin/WORKSPACE_GROUPS.md)** - Manage user groups and members
+- **[Workspace Invites](docs/admin/WORKSPACE_INVITES.md)** - Invite users and revoke invitations
+- **[Workspace Members](docs/admin/WORKSPACE_MEMBERS.md)** - Update member attributes and roles
+- **[Workspace Resources](docs/admin/WORKSPACE_RESOURCES.md)** - Share/unshare resources across the workspace
+- **[Pronunciation Dictionaries](docs/admin/PRONUNCIATION_DICTIONARIES.md)** - Create, manage and download pronunciation dictionaries
+
+### 🔧 **Advanced Features**
+- **[WebSocket Streaming](docs/WEBSOCKET_STREAMING.md)** - Real-time audio streaming with WebSockets
 
 ### Available Endpoints
 

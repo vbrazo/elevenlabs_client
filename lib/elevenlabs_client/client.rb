@@ -160,8 +160,7 @@ module ElevenlabsClient
     # Debug information
     def inspect
       "#<#{self.class.name}:0x#{object_id.to_s(16)} " \
-      "base_url=#{base_url.inspect} " \
-      "endpoints=#{@endpoints.keys.inspect}>"
+      "base_url=#{base_url.inspect}>"
     end
 
     # Health check method

@@ -40,16 +40,11 @@ module ElevenlabsClient
           endpoint = "/v1/convai/agents/#{agent_id}/avatar"
           
           # Prepare multipart form data
-          form_data = [
-            {
-              name: "avatar_file",
-              file: avatar_file_io,
-              filename: filename,
-              headers: { "Content-Type" => "application/octet-stream" }
-            }
-          ]
+          payload = {
+            "avatar_file" => @client.file_part(avatar_file_io, filename)
+          }
 
-          @client.post_multipart(endpoint, form_data)
+          @client.post_multipart(endpoint, payload)
         end
       end
     end

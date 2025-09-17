@@ -214,7 +214,7 @@ RSpec.describe "Outbound Calling Integration" do
                 agent_phone_number_id: agent_phone_number_id,
                 to_number: to_number
               )
-            }.to raise_error(ElevenlabsClient::ValidationError)
+            }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
           end
         end
 
@@ -656,7 +656,7 @@ RSpec.describe "Outbound Calling Integration" do
             agent_phone_number_id: agent_phone_number_id,
             to_number: to_number
           )
-        }.to raise_error(Net::TimeoutError)
+        }.to raise_error(Faraday::ConnectionFailed)
       end
     end
 
@@ -701,7 +701,7 @@ RSpec.describe "Outbound Calling Integration" do
             agent_phone_number_id: agent_phone_number_id,
             to_number: to_number
           )
-        }.to raise_error(JSON::ParserError)
+        }.to raise_error(Faraday::ParsingError)
       end
     end
   end

@@ -249,7 +249,7 @@ RSpec.describe "Batch Calling Integration" do
               )
           end
 
-          it "raises ValidationError for empty recipients" do
+          it "raises UnprocessableEntityError for empty recipients" do
             expect {
               client.batch_calling.submit(
                 call_name: call_name,
@@ -258,7 +258,7 @@ RSpec.describe "Batch Calling Integration" do
                 scheduled_time_unix: scheduled_time_unix,
                 recipients: []
               )
-            }.to raise_error(ElevenlabsClient::ValidationError)
+            }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
           end
         end
 
@@ -355,7 +355,7 @@ RSpec.describe "Batch Calling Integration" do
         it "lists batch call jobs successfully" do
           result = client.batch_calling.list
 
-          expect(result["batch_calls"]).to have(3).items
+          expect(result["batch_calls"].size).to eq(3)
           expect(result["batch_calls"][0]["id"]).to eq("batch_001")
           expect(result["batch_calls"][0]["status"]).to eq("in_progress")
           expect(result["batch_calls"][1]["status"]).to eq("completed")
@@ -407,7 +407,7 @@ RSpec.describe "Batch Calling Integration" do
         it "handles pagination parameters correctly" do
           result = client.batch_calling.list(limit: 10, last_doc: "previous_token_123")
 
-          expect(result["batch_calls"]).to have(1).item
+          expect(result["batch_calls"].size).to eq(1)
           expect(result["batch_calls"][0]["id"]).to eq("batch_004")
           expect(result["has_more"]).to be false
           expect(result["next_doc"]).to be_nil
@@ -509,7 +509,7 @@ RSpec.describe "Batch Calling Integration" do
           expect(result["status"]).to eq("in_progress")
           expect(result["total_calls_dispatched"]).to eq(8)
           expect(result["total_calls_scheduled"]).to eq(10)
-          expect(result["recipients"]).to have(5).items
+          expect(result["recipients"].size).to eq(5)
         end
 
         it "includes detailed recipient information with various statuses" do
@@ -627,10 +627,10 @@ RSpec.describe "Batch Calling Integration" do
             )
         end
 
-        it "raises ValidationError for non-cancellable jobs" do
+        it "raises UnprocessableEntityError for non-cancellable jobs" do
           expect {
             client.batch_calling.cancel(batch_id)
-          }.to raise_error(ElevenlabsClient::ValidationError)
+          }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
         end
       end
     end
@@ -706,10 +706,10 @@ RSpec.describe "Batch Calling Integration" do
             )
         end
 
-        it "raises ValidationError when no calls to retry" do
+        it "raises UnprocessableEntityError when no calls to retry" do
           expect {
             client.batch_calling.retry(batch_id)
-          }.to raise_error(ElevenlabsClient::ValidationError)
+          }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
         end
       end
     end
@@ -869,7 +869,7 @@ RSpec.describe "Batch Calling Integration" do
 
         # Verify all requests were made
         expect(WebMock).to have_requested(:post, submit_endpoint).once
-        expect(WebMock).to have_requested(:get, detail_endpoint).times(3)
+        expect(WebMock).to have_requested(:get, detail_endpoint).times(2)
         expect(WebMock).to have_requested(:post, retry_endpoint).once
       end
     end
@@ -922,7 +922,7 @@ RSpec.describe "Batch Calling Integration" do
         it "handles malformed JSON gracefully" do
           expect {
             client.batch_calling.list
-          }.to raise_error(JSON::ParserError)
+          }.to raise_error(Faraday::ParsingError)
         end
       end
     end

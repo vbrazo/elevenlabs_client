@@ -240,10 +240,10 @@ RSpec.describe "ElevenlabsClient Music Integration" do
           )
       end
 
-      it "raises ValidationError for other client errors" do
+      it "raises ForbiddenError for access forbidden" do
         expect {
           client.music.compose(prompt: prompt)
-        }.to raise_error(ElevenlabsClient::ValidationError, "Access forbidden")
+        }.to raise_error(ElevenlabsClient::ForbiddenError, "Access forbidden")
       end
     end
 

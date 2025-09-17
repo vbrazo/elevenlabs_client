@@ -114,18 +114,15 @@ RSpec.describe ElevenlabsClient::Endpoints::AgentsPlatform::Widgets do
         }
       end
 
+      let(:file_part_mock) { double("FilePart") }
       let(:expected_form_data) do
-        [
-          {
-            name: "avatar_file",
-            file: avatar_file_io,
-            filename: filename,
-            headers: { "Content-Type" => "application/octet-stream" }
-          }
-        ]
+        {
+          "avatar_file" => file_part_mock
+        }
       end
 
       before do
+        allow(client).to receive(:file_part).with(avatar_file_io, filename).and_return(file_part_mock)
         allow(client).to receive(:post_multipart).with(endpoint, expected_form_data).and_return(response)
       end
 
@@ -145,17 +142,18 @@ RSpec.describe ElevenlabsClient::Endpoints::AgentsPlatform::Widgets do
 
     context "with different file types" do
       let(:jpg_filename) { "avatar.jpg" }
+      let(:jpg_file_part_mock) { double("JPGFilePart") }
       
       before do
+        allow(client).to receive(:file_part).with(avatar_file_io, jpg_filename).and_return(jpg_file_part_mock)
         allow(client).to receive(:post_multipart).and_return({})
       end
 
       it "handles different file extensions" do
         widgets.create_avatar(agent_id, avatar_file_io: avatar_file_io, filename: jpg_filename)
         
-        expect(client).to have_received(:post_multipart) do |endpoint, form_data|
-          expect(form_data.first[:filename]).to eq(jpg_filename)
-        end
+        expect(client).to have_received(:file_part).with(avatar_file_io, jpg_filename)
+        expect(client).to have_received(:post_multipart).with(endpoint, { "avatar_file" => jpg_file_part_mock })
       end
     end
 

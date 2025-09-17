@@ -232,10 +232,10 @@ RSpec.describe "Widgets Integration" do
               )
           end
 
-          it "raises ValidationError" do
+          it "raises UnprocessableEntityError" do
             expect {
               client.widgets.get(agent_id)
-            }.to raise_error(ElevenlabsClient::ValidationError)
+            }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
           end
         end
       end
@@ -355,7 +355,7 @@ RSpec.describe "Widgets Integration" do
               )
           end
 
-          it "raises ValidationError for oversized files" do
+          it "raises UnprocessableEntityError for oversized files" do
             avatar_file = StringIO.new(avatar_file_content)
             
             expect {
@@ -364,7 +364,7 @@ RSpec.describe "Widgets Integration" do
                 avatar_file_io: avatar_file,
                 filename: filename
               )
-            }.to raise_error(ElevenlabsClient::ValidationError)
+            }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
           end
         end
 
@@ -378,7 +378,7 @@ RSpec.describe "Widgets Integration" do
               )
           end
 
-          it "raises ValidationError for unsupported formats" do
+          it "raises UnprocessableEntityError for unsupported formats" do
             avatar_file = StringIO.new(avatar_file_content)
             
             expect {
@@ -387,7 +387,7 @@ RSpec.describe "Widgets Integration" do
                 avatar_file_io: avatar_file,
                 filename: "avatar.bmp"
               )
-            }.to raise_error(ElevenlabsClient::ValidationError)
+            }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
           end
         end
 
@@ -459,11 +459,23 @@ RSpec.describe "Widgets Integration" do
       end
 
       before do
-        # Step 1: Get initial configuration
+        # Configure sequential responses for widget GET endpoint
         stub_request(:get, widget_endpoint)
           .to_return(
             status: 200,
             body: initial_config_response.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+          .then
+          .to_return(
+            status: 200,
+            body: updated_config_response.to_json,
+            headers: { "Content-Type" => "application/json" }
+          )
+          .then
+          .to_return(
+            status: 200,
+            body: updated_config_response.to_json,
             headers: { "Content-Type" => "application/json" }
           )
 
@@ -472,19 +484,6 @@ RSpec.describe "Widgets Integration" do
           .to_return(
             status: 200,
             body: avatar_upload_response.to_json,
-            headers: { "Content-Type" => "application/json" }
-          )
-
-        # Step 3: Get updated configuration (with custom avatar)
-        stub_request(:get, widget_endpoint)
-          .to_return(
-            status: 200,
-            body: updated_config_response.to_json,
-            headers: { "Content-Type" => "application/json" }
-          ).then
-          .to_return(
-            status: 200,
-            body: updated_config_response.to_json,
             headers: { "Content-Type" => "application/json" }
           )
       end
