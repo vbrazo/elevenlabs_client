@@ -4,6 +4,8 @@
 
 A comprehensive Ruby client library for the ElevenLabs API, supporting voice synthesis, dubbing, dialogue generation, sound effects, AI music composition, voice transformation, speech transcription, audio isolation, and advanced audio processing features.
 
+See [Architecture Documentation](docs/ARCHITECTURE.md) for details.
+
 ## Features
 
 🎙️ **Text-to-Speech** - Convert text to natural-sounding speech  
@@ -78,19 +80,31 @@ export ELEVENLABS_BASE_URL="https://api.elevenlabs.io"  # Optional, defaults to 
 #### Direct Configuration
 
 ```ruby
-# Module-level configuration
+# Global configuration (recommended)
+ElevenlabsClient.configure do |config|
+  config.api_key = "your_api_key_here"
+  config.base_url = "https://api.elevenlabs.io"
+  config.timeout = 30
+  config.retry_count = 3
+end
+
+# Use globally configured client
+client = ElevenlabsClient.client
+
+# Or pass directly to client instance
+client = ElevenlabsClient.new(
+  api_key: "your_api_key_here",
+  base_url: "https://api.elevenlabs.io",
+  timeout: 60
+)
+
+# Legacy Settings support (still works)
 ElevenlabsClient.configure do |config|
   config.properties = {
     elevenlabs_base_uri: "https://api.elevenlabs.io",
     elevenlabs_api_key: "your_api_key_here"
   }
 end
-
-# Or pass directly to client
-client = ElevenlabsClient.new(
-  api_key: "your_api_key_here",
-  base_url: "https://api.elevenlabs.io"
-)
 ```
 
 ### Basic Usage
@@ -285,6 +299,10 @@ end
   - **[Samples Management](docs/admin/SAMPLES.md)** - Delete voice samples for content moderation
   - **[Service Accounts](docs/admin/SERVICE_ACCOUNTS.md)** - Monitor service accounts and API keys
   - **[Webhooks Management](docs/admin/WEBHOOKS.md)** - Monitor workspace webhooks and their health
+  - **[Workspace Groups](docs/admin/WORKSPACE_GROUPS.md)** - Manage user groups and members
+  - **[Workspace Invites](docs/admin/WORKSPACE_INVITES.md)** - Invite users and revoke invitations
+  - **[Workspace Members](docs/admin/WORKSPACE_MEMBERS.md)** - Update member attributes and roles
+  - **[Workspace Resources](docs/admin/WORKSPACE_RESOURCES.md)** - Share/unshare resources across the workspace
   - **[Pronunciation Dictionaries](docs/admin/PRONUNCIATION_DICTIONARIES.md)** - Create, manage and download pronunciation dictionaries
 
 ### Available Endpoints
@@ -309,6 +327,10 @@ end
 | `client.history.*` | Generated audio history management | [HISTORY.md](docs/admin/HISTORY.md) |
 | `client.voice_library.*` | Community voice browsing and management | [VOICE_LIBRARY.md](docs/admin/VOICE_LIBRARY.md) |
 | `client.models.*` | Model information and capabilities | [MODELS.md](docs/admin/MODELS.md) |
+| `client.workspace_groups.*` | Workspace user groups management | [WORKSPACE_GROUPS.md](docs/admin/WORKSPACE_GROUPS.md) |
+| `client.workspace_invites.*` | Workspace invites management | [WORKSPACE_INVITES.md](docs/admin/WORKSPACE_INVITES.md) |
+| `client.workspace_members.*` | Workspace member management | [WORKSPACE_MEMBERS.md](docs/admin/WORKSPACE_MEMBERS.md) |
+| `client.workspace_resources.*` | Workspace resource sharing | [WORKSPACE_RESOURCES.md](docs/admin/WORKSPACE_RESOURCES.md) |
 | `client.pronunciation_dictionaries.*` | Manage pronunciation dictionaries | [PRONUNCIATION_DICTIONARIES.md](docs/admin/PRONUNCIATION_DICTIONARIES.md) |
 | `client.samples.*` | Voice sample deletion and content moderation | [SAMPLES.md](docs/admin/SAMPLES.md) |
 | `client.service_accounts.*` | Service account monitoring and management | [SERVICE_ACCOUNTS.md](docs/admin/SERVICE_ACCOUNTS.md) |

@@ -5,6 +5,7 @@ The Admin User API allows you to retrieve comprehensive information about the cu
 ## Available Methods
 
 - `client.user.get_user` - Get comprehensive user information
+- `client.user.get_subscription` (alias: `client.user.subscription`) - Get extended subscription information
 
 ### Alias Methods
 
@@ -30,7 +31,22 @@ puts "Account Created: #{Time.at(user_info['created_at']).strftime('%Y-%m-%d')}"
 puts "Onboarding Complete: #{user_info['is_onboarding_completed']}"
 ```
 
-### Subscription Information
+### Subscription Information (from get_user)
+### Extended Subscription Information (get_subscription)
+
+```ruby
+subscription = client.user.get_subscription
+
+puts "Subscription: #{subscription['tier']} (#{subscription['status']})"
+puts "Characters: #{subscription['character_count']} / #{subscription['character_limit']}"
+puts "Voice slots: #{subscription['voice_slots_used']} / #{subscription['voice_limit']}"
+puts "Currency: #{subscription['currency']}"
+puts "Billing: #{subscription['billing_period']} | Refresh: #{subscription['character_refresh_period']}"
+
+if subscription['has_open_invoices']
+  puts "Open invoices: #{subscription['open_invoices'].length}"
+end
+```
 
 ```ruby
 user_info = client.user.get_user

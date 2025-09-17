@@ -143,6 +143,11 @@ end
 ---
 
 ### 🔗 [Webhooks Management](WEBHOOKS.md)
+### 👥 [Workspace Groups](WORKSPACE_GROUPS.md)
+### ✉️ [Workspace Invites](WORKSPACE_INVITES.md)
+### 👤 [Workspace Members](WORKSPACE_MEMBERS.md)
+### 📦 [Workspace Resources](WORKSPACE_RESOURCES.md)
+
 Monitor and manage workspace webhooks with comprehensive health and security analysis.
 
 ```ruby

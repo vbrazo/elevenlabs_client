@@ -56,6 +56,18 @@ RSpec.describe ElevenlabsClient::Client do
     end
   end
 
+  describe "#llm_usage" do
+    it "provides access to LLM usage endpoint" do
+      expect(client.llm_usage).to be_an_instance_of(ElevenlabsClient::Endpoints::AgentsPlatform::LlmUsage)
+    end
+  end
+
+  describe "#mcp_servers" do
+    it "provides access to MCP servers endpoint" do
+      expect(client.mcp_servers).to be_an_instance_of(ElevenlabsClient::Endpoints::AgentsPlatform::McpServers)
+    end
+  end
+
   describe "#patch" do
     let(:path) { "/v1/test/patch" }
     let(:request_body) { { "field" => "updated_value" } }

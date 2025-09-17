@@ -236,6 +236,62 @@ RSpec.describe "ElevenlabsClient User Integration" do
     end
   end
 
+  describe "user subscription functionality via client" do
+    let(:subscription_response) do
+      {
+        "tier" => "starter",
+        "character_count" => 1000,
+        "character_limit" => 10000,
+        "max_character_limit_extension" => 10000,
+        "can_extend_character_limit" => true,
+        "allowed_to_extend_character_limit" => true,
+        "voice_slots_used" => 1,
+        "professional_voice_slots_used" => 0,
+        "voice_limit" => 10,
+        "voice_add_edit_counter" => 0,
+        "professional_voice_limit" => 1,
+        "can_extend_voice_limit" => true,
+        "can_use_instant_voice_cloning" => true,
+        "can_use_professional_voice_cloning" => true,
+        "status" => "active",
+        "open_invoices" => [],
+        "has_open_invoices" => false,
+        "next_character_count_reset_unix" => 1738356858,
+        "currency" => "usd",
+        "billing_period" => "monthly_period",
+        "character_refresh_period" => "monthly_period",
+        "next_invoice" => nil
+      }
+    end
+
+    it "retrieves subscription details" do
+      stub_request(:get, "https://api.elevenlabs.io/v1/user/subscription")
+        .with(headers: { "xi-api-key" => api_key })
+        .to_return(status: 200, body: subscription_response.to_json, headers: { "Content-Type" => "application/json" })
+
+      result = client.user.get_subscription
+      expect(result["tier"]).to eq("starter")
+      expect(result["status"]).to eq("active")
+      expect(result["character_limit"]).to eq(10000)
+    end
+
+    it "handles authentication errors" do
+      stub_request(:get, "https://api.elevenlabs.io/v1/user/subscription")
+        .with(headers: { "xi-api-key" => api_key })
+        .to_return(status: 401, body: { detail: "Invalid API key" }.to_json, headers: { "Content-Type" => "application/json" })
+
+      expect { client.user.get_subscription }.to raise_error(ElevenlabsClient::AuthenticationError)
+    end
+
+    it "handles validation errors" do
+      stub_request(:get, "https://api.elevenlabs.io/v1/user/subscription")
+        .with(headers: { "xi-api-key" => api_key })
+        .to_return(status: 422, body: { detail: "Invalid request" }.to_json, headers: { "Content-Type" => "application/json" })
+
+      expect { client.user.get_subscription }.to raise_error(ElevenlabsClient::UnprocessableEntityError)
+    end
+  end
+
   describe "user method aliases" do
     it "provides user alias" do
       expect(client.user.method(:user)).to eq(client.user.method(:get_user))

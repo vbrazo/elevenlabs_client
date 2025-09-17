@@ -9,4 +9,8 @@ module ElevenlabsClient
   class NotFoundError < Error; end
   class BadRequestError < Error; end
   class UnprocessableEntityError < Error; end
+  class ForbiddenError < Error; end
+  class ServiceUnavailableError < Error; end
+  class TimeoutError < Error; end
+  class PaymentRequiredError < Error; end
 end
