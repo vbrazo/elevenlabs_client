@@ -285,6 +285,7 @@ end
   - **[Samples Management](docs/admin/SAMPLES.md)** - Delete voice samples for content moderation
   - **[Service Accounts](docs/admin/SERVICE_ACCOUNTS.md)** - Monitor service accounts and API keys
   - **[Webhooks Management](docs/admin/WEBHOOKS.md)** - Monitor workspace webhooks and their health
+  - **[Pronunciation Dictionaries](docs/admin/PRONUNCIATION_DICTIONARIES.md)** - Create, manage and download pronunciation dictionaries
 
 ### Available Endpoints
 
@@ -308,6 +309,7 @@ end
 | `client.history.*` | Generated audio history management | [HISTORY.md](docs/admin/HISTORY.md) |
 | `client.voice_library.*` | Community voice browsing and management | [VOICE_LIBRARY.md](docs/admin/VOICE_LIBRARY.md) |
 | `client.models.*` | Model information and capabilities | [MODELS.md](docs/admin/MODELS.md) |
+| `client.pronunciation_dictionaries.*` | Manage pronunciation dictionaries | [PRONUNCIATION_DICTIONARIES.md](docs/admin/PRONUNCIATION_DICTIONARIES.md) |
 | `client.samples.*` | Voice sample deletion and content moderation | [SAMPLES.md](docs/admin/SAMPLES.md) |
 | `client.service_accounts.*` | Service account monitoring and management | [SERVICE_ACCOUNTS.md](docs/admin/SERVICE_ACCOUNTS.md) |
 | `client.webhooks.*` | Workspace webhook monitoring and health analysis | [WEBHOOKS.md](docs/admin/WEBHOOKS.md) |

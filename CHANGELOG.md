@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Admin: Pronunciation Dictionaries
+  - Create dictionary from file: `client.pronunciation_dictionaries.add_from_file(name:, file_io: nil, filename: nil, description: nil, workspace_access: nil)`
+  - Create dictionary from rules: `client.pronunciation_dictionaries.add_from_rules(name:, rules:, description: nil, workspace_access: nil)`
+  - Get dictionary metadata: `client.pronunciation_dictionaries.get(pronunciation_dictionary_id)`
+  - Update dictionary: `client.pronunciation_dictionaries.update(pronunciation_dictionary_id, **attributes)`
+  - Download dictionary version (PLS): `client.pronunciation_dictionaries.download_pronunciation_dictionary_version(dictionary_id:, version_id:)`
+  - List dictionaries: `client.pronunciation_dictionaries.list_pronunciation_dictionaries(cursor:, page_size:, sort:, sort_direction:)`
+
+### Docs
+- Added `docs/admin/PRONUNCIATION_DICTIONARIES.md`
+- Updated `docs/admin/README.md` and main `README.md` with links and examples
+
 ## [0.7.0] - 2024-09-15
 
 ### Added

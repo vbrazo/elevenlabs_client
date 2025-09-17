@@ -545,3 +545,7 @@ For detailed examples and advanced usage patterns, see the individual endpoint d
 - [Usage Analytics](USAGE.md)  
 - [History Management](HISTORY.md)
 - [Voice Library](VOICE_LIBRARY.md)
+- [Samples Management](SAMPLES.md)
+- [Service Accounts](SERVICE_ACCOUNTS.md)
+- [Webhooks Management](WEBHOOKS.md)
+- [Pronunciation Dictionaries](PRONUNCIATION_DICTIONARIES.md)
