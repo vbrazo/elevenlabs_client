@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2025-12-03
+
+### Fixed
+- **🔧 Document Upload MIME Types** - Fixed `invalid_file_type` errors when uploading documents to knowledge base
+  - Added support for document MIME types in `HttpClient#mime_for` method:
+    - PDF: `application/pdf`
+    - EPUB: `application/epub+zip`
+    - DOCX: `application/vnd.openxmlformats-officedocument.wordprocessingml.document`
+    - DOC: `application/msword`
+    - TXT: `text/plain`
+    - HTML/HTM: `text/html`
+    - Markdown: `text/markdown`
+  - Previously, all document types defaulted to `application/octet-stream`, causing ElevenLabs API to reject valid files
+  - Added comprehensive test coverage for MIME type detection
+
 ## [0.8.0] - 2024-09-17
 
 ### Added
