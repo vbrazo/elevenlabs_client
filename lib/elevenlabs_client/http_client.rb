@@ -318,6 +318,13 @@ module ElevenlabsClient
       when ".wav"  then "audio/wav"
       when ".flac" then "audio/flac"
       when ".m4a"  then "audio/mp4"
+      when ".pdf"  then "application/pdf"
+      when ".epub" then "application/epub+zip"
+      when ".docx" then "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      when ".doc"  then "application/msword"
+      when ".txt"  then "text/plain"
+      when ".html", ".htm" then "text/html"
+      when ".md"   then "text/markdown"
       else "application/octet-stream"
       end
     end
