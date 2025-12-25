@@ -79,6 +79,7 @@ module ElevenlabsClient
       @workspace = Endpoints::AgentsPlatform::Workspace.new(self)
       @llm_usage = Endpoints::AgentsPlatform::LlmUsage.new(self)
       @mcp_servers = Endpoints::AgentsPlatform::McpServers.new(self)
+      @secrets = Endpoints::AgentsPlatform::Secrets.new(self)
     end
 
     public
@@ -93,7 +94,7 @@ module ElevenlabsClient
                 :workspace_webhooks, :service_account_api_keys,
                 :agents, :conversations, :tools, :knowledge_base, :tests, :test_invocations,
                 :phone_numbers, :widgets, :outbound_calling, :batch_calling, :workspace,
-                :llm_usage, :mcp_servers
+                :llm_usage, :mcp_servers, :secrets
 
     # Delegate HTTP methods to http_client for backward compatibility
     def get(path, params = {})

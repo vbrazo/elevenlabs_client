@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2025-12-25
+
+### Added
+- **🔐 Agents Platform: Secrets Management** - Complete secrets management for ElevenLabs agents
+  - **Secrets API** (`client.secrets.*`)
+    - List secrets: `client.secrets.list` - Retrieve all secrets from ElevenLabs workspace
+    - Create secret: `client.secrets.create(name:, value:, type: "new")` - Create new secrets with optional type
+    - Delete secret: `client.secrets.delete(secret_id)` - Remove secrets by ID
+  - Comprehensive error handling for authentication, validation, and not found scenarios
+  - Support for different secret types (new, update)
+  - Full test coverage with 18 test examples covering all CRUD operations, error handling, and edge cases
+
+### Enhanced
+- **🔧 Backend Integration** - Updated secrets controller to use ElevenLabs client library
+  - Replaced direct `Net::HTTP` calls with `ElevenlabsClient` library
+  - Improved error handling and consistency with other endpoints
+  - Better maintainability and reduced code duplication
+  - Seamless integration with existing authentication and API key management
+
+### Technical Improvements
+- **🧪 Test Coverage** - Comprehensive testing for secrets endpoint
+  - Added 18 new endpoint tests covering list, create, and delete operations
+  - Error handling tests for NotFoundError, BadRequestError, UnprocessableEntityError, AuthenticationError, and ForbiddenError
+  - Parameter handling tests for special characters, long values, and different ID formats
+  - Workflow scenario tests for full CRUD operations
+  - All tests passing with 0 failures
+
 ## [0.8.1] - 2025-12-03
 
 ### Fixed

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    elevenlabs_client (0.8.1)
+    elevenlabs_client (0.9.0)
       faraday (~> 2.0)
       faraday-multipart (~> 1.0)
       websocket-client-simple (~> 0.8)
